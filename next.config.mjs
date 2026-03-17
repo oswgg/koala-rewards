@@ -6,9 +6,6 @@ const withPWA = withPWAInit({
     cacheStartUrl: true,
     dynamicStartUrl: false,
     extendDefaultRuntimeCaching: true,
-    fallbacks: {
-        document: '/_offline',
-    },
     workboxOptions: {
         runtimeCaching: [
             {

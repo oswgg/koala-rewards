@@ -1,13 +1,5 @@
-import type { LoyaltyProgramType, StoredLoyaltyProgram } from '@/shared/types/loyalty-program';
+import type { StoredLoyaltyProgram } from '@/shared/types/loyalty-program';
 import { customerRoutes } from './routes';
-
-export interface ProgramQRData {
-    program_id: string;
-    business_id: string;
-    program_name: string;
-    program_type: LoyaltyProgramType;
-    required_quantity: number;
-}
 
 export interface CustomerQRData {
     membership_client_id: string;
@@ -16,51 +8,14 @@ export interface CustomerQRData {
 }
 
 /**
- * Builds a join URL with embedded program data as query params.
- * Native phone QR readers will open this URL, and the join page
- * can read program details offline from the params.
+ * Builds a join URL for a program.
  */
 export function buildProgramJoinUrl(
     baseUrl: string,
-    program: Pick<
-        StoredLoyaltyProgram,
-        'id' | 'public_id' | 'business_id' | 'name' | 'type' | 'reward_cost'
-    >
+    program: Pick<StoredLoyaltyProgram, 'id' | 'public_id'>
 ): string {
-    const path = customerRoutes.join(program.id);
-    const params = new URLSearchParams({
-        pid: program.id,
-        bid: program.business_id,
-        name: program.name,
-        type: program.type,
-        qty: String(program.reward_cost ?? 0),
-    });
-    return `${baseUrl}${path}?${params.toString()}`;
-}
-
-/**
- * Parses program data from join URL query params.
- * Returns null if required params are missing.
- */
-export function parseProgramQRParams(searchParams: URLSearchParams): ProgramQRData | null {
-    const bid = searchParams.get('bid');
-    const name = searchParams.get('name');
-    const type = searchParams.get('type') as LoyaltyProgramType | null;
-    const qty = searchParams.get('qty');
-    const pid = searchParams.get('pid');
-
-    if (!pid || !bid || !name || !type || !qty) return null;
-
-    const validTypes: LoyaltyProgramType[] = ['stamps', 'points', 'cashback'];
-    if (!validTypes.includes(type)) return null;
-
-    return {
-        program_id: pid,
-        business_id: bid,
-        program_name: name,
-        program_type: type,
-        required_quantity: Number(qty),
-    };
+    const path = customerRoutes.join(program.public_id ?? program.id);
+    return `${baseUrl}${path}`;
 }
 
 /**

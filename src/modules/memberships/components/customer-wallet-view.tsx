@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AlertDialog } from 'radix-ui';
-import { CircleUser, CreditCard, LogOut, Plus, Bell, WifiOff, QrCode } from 'lucide-react';
+import { CircleUser, CreditCard, LogOut, Plus, Bell } from 'lucide-react';
 import { authService } from '@/shared/services/auth/implementation.auth-service';
 import { customerRoutes } from '@/shared/lib/routes';
 import { Button } from '@/shared/components/ui/button';
@@ -11,22 +11,14 @@ import { CardWallet } from '@/shared/components/wallets/card-wallet';
 import { CardWalletSkeleton } from '@/shared/components/wallets/card-wallet-skeleton';
 import { JoinProgramScanner } from './join-program-scanner';
 import { useWalletCards } from '../hooks/useWalletCards';
-import { useSyncMemberships } from '../hooks/useSyncMemberships';
-import { useOfflineMemberships } from '../hooks/useOfflineMemberships';
-import { useNetworkStatus } from '@/shared/hooks/useNetworkStatus';
 import { cn } from '@/shared/lib/utils';
 
 export function CustomerWalletView() {
     const router = useRouter();
     const [scannerOpen, setScannerOpen] = useState(false);
     const [logoutOpen, setLogoutOpen] = useState(false);
-    const { isOnline } = useNetworkStatus();
     const { cards, newlyAddedId, balanceChangedId, handleJoinSuccess, isLoading } =
         useWalletCards();
-    const { pendingMemberships } = useOfflineMemberships();
-    useSyncMemberships();
-
-    const hasPendingCards = pendingMemberships.length > 0;
 
     const handleSignOut = async () => {
         setLogoutOpen(false);
@@ -36,20 +28,6 @@ export function CustomerWalletView() {
 
     return (
         <div className="relative mx-auto flex min-h-svh max-w-md flex-col bg-neutral-100 dark:bg-neutral-950 scroball-hidden">
-            {!isOnline && (
-                <div className="sticky top-0 z-60 flex flex-col items-center gap-1 bg-amber-500/90 px-4 py-2 text-sm font-medium text-amber-950">
-                    <div className="flex items-center gap-2">
-                        <WifiOff className="size-4" />
-                        Sin conexión · Mostrando datos guardados
-                    </div>
-                    {hasPendingCards && (
-                        <div className="flex items-center gap-1.5 text-xs font-normal">
-                            <QrCode className="size-3.5" />
-                            Muestra tu código QR al staff para registrar tu visita
-                        </div>
-                    )}
-                </div>
-            )}
             <header className="sticky top-0 z-50 flex items-center justify-between bg-white/80 px-5 py-3 backdrop-blur-xl dark:bg-neutral-900/80">
                 <div className="flex items-center gap-2.5">
                     <CircleUser strokeWidth={1.5} className="size-7 text-foreground" />
