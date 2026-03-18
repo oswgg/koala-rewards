@@ -1,19 +1,45 @@
+'use client';
+
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { AuthForm } from '@/shared/components/auth-form';
 import { customerRoutes } from '@/shared/lib/routes';
 
-export default function SignupPage() {
+function SignupContent() {
+    const searchParams = useSearchParams();
+    const returnUrl = searchParams.get('returnUrl');
+    const redirectTo = returnUrl ? decodeURIComponent(returnUrl) : customerRoutes.app;
+
     return (
         <div className="flex min-h-svh flex-col items-center p-6 pt-24 gap-6 bg-background">
             <div className="w-full max-w-sm">
                 <AuthForm
                     type="signup"
-                    redirectTo={customerRoutes.app}
+                    redirectTo={redirectTo}
                     redirectOnChange={{
-                        login: customerRoutes.login,
-                        signup: customerRoutes.signup,
+                        login: returnUrl
+                            ? `${customerRoutes.login}?returnUrl=${encodeURIComponent(returnUrl)}`
+                            : customerRoutes.login,
+                        signup: returnUrl
+                            ? `${customerRoutes.signup}?returnUrl=${encodeURIComponent(returnUrl)}`
+                            : customerRoutes.signup,
                     }}
                 />
             </div>
         </div>
+    );
+}
+
+export default function SignupPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="flex min-h-svh flex-col items-center justify-center p-6 bg-background">
+                    <p className="text-muted-foreground">Cargando...</p>
+                </div>
+            }
+        >
+            <SignupContent />
+        </Suspense>
     );
 }

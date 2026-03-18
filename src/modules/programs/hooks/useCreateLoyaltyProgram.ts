@@ -24,6 +24,7 @@ const createProgramSchema = z.discriminatedUnion(
                 cashback_percentage: z.preprocess(() => null, z.null()),
                 reward_cost: z.number('El costo de la recompensa es requerido').min(1),
                 limit_one_per_day: z.boolean().default(false),
+                card_theme: z.string().default('neutral'),
             })
             .strict(),
         z
@@ -35,17 +36,19 @@ const createProgramSchema = z.discriminatedUnion(
                 cashback_percentage: z.preprocess(() => null, z.null()),
                 reward_cost: z.preprocess(() => null, z.null()),
                 limit_one_per_day: z.boolean().default(false),
+                card_theme: z.string().default('neutral'),
             })
             .strict(),
         z
             .object({
                 type: z.literal('cashback'),
                 name: z.string('El nombre del programa es requerido').min(1),
-                reward_description: z.string('La descripción de la recompensa es requerida').min(1),
+                reward_description: z.preprocess(() => null, z.null()),
                 points_percentage: z.preprocess(() => null, z.null()),
                 cashback_percentage: z.number('El porcentaje de cashback es requerido').min(1),
                 reward_cost: z.preprocess(() => null, z.null()),
                 limit_one_per_day: z.boolean().default(false),
+                card_theme: z.string().default('neutral'),
             })
             .strict(),
     ],
@@ -90,6 +93,7 @@ export function useCreateLoyaltyProgram() {
         defaultValues: {
             type: 'stamps',
             limit_one_per_day: false,
+            card_theme: 'neutral',
         } as CreateProgramFormValues,
         onSubmit: async ({ value }: { value: CreateProgramFormValues }) => {
             await createProgramMutation.mutateAsync(value as CreateProgramInput);

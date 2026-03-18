@@ -46,7 +46,7 @@ export const customerRoutes = {
     app: '/',
     signup: '/signup',
     login: '/login',
-    join: (programId: string) => `/join/${programId}`,
+    /** Join URL uses ?j= query param on app (e.g. /?j=compressedPayload) */
     scan: (membershipPublicId: string) => `/scan/${membershipPublicId}`,
 } as const;
 

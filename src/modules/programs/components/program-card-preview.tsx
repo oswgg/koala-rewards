@@ -9,23 +9,18 @@ import type { StoredLoyaltyProgram } from '@/shared/types/loyalty-program';
 import Link from 'next/link';
 import {
     MemberShipCardDetailView,
-    CARD_THEMES,
+    getCardTheme,
     typeConfig,
 } from '@/shared/components/wallets/mermbership-card-detail';
 import { buildProgramJoinUrl } from '@/shared/lib/qr-data';
 
 export { typeConfig };
 
-const CARD_WIDTH = 260;
-const CARD_ASPECT = 1 / 1.3; // Vertical, menos alto que tarjeta de banco
-
 export function ProgramCardPreview({
     program,
-    index = 0,
     className,
 }: {
     program: StoredLoyaltyProgram;
-    index?: number;
     className?: string;
 }) {
     const [copied, setCopied] = useState(false);
@@ -33,26 +28,30 @@ export function ProgramCardPreview({
     const statusColor = program.is_active ? 'bg-emerald-500' : 'bg-amber-400';
     const base = process.env.NEXT_PUBLIC_APP_URL ?? '';
     const joinUrl = buildProgramJoinUrl(base, program);
-    const theme = CARD_THEMES[index % CARD_THEMES.length];
+    const theme = getCardTheme(program.card_theme);
 
     const handleCopyLink = async () => {
         try {
             await navigator.clipboard.writeText(joinUrl);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
-        } catch {
-            // fallback para navegadores sin clipboard API
-        }
+        } catch {}
     };
 
     return (
         <div className={cn('flex flex-col items-center gap-2', className)}>
             <Link
                 href={`/business/programs/${program.id}`}
-                className="block w-[320px] overflow-hidden rounded-3xl shadow-lg hover:shadow-xl transition-shadow duration-300"
+                className="block w-full overflow-hidden rounded-3xl shadow-lg transition-shadow duration-300 hover:shadow-xl"
             >
                 <MemberShipCardDetailView
-                    program={program}
+                    businessName={program.business.name}
+                    programName={program.name}
+                    programType={program.type}
+                    rewardDescription={program.reward_description}
+                    rewardCost={program.reward_cost ?? 0}
+                    cashbackPercentage={program.cashback_percentage ?? 0}
+                    pointsPercentage={program.points_percentage ?? 0}
                     balance={0}
                     qrUrl={joinUrl}
                     theme={theme}
@@ -83,18 +82,12 @@ export function ProgramCardPreview({
 
 export function ProgramCardPreviewSkeleton() {
     return (
-        <div
-            style={{
-                width: CARD_WIDTH,
-                aspectRatio: CARD_ASPECT,
-            }}
-            className="animate-pulse rounded-xl border border-border bg-muted/30"
-        >
+        <div className="min-w-[360px] animate-pulse rounded-xl border border-border bg-muted/30 aspect-3/4">
             <div className="flex flex-1 flex-col overflow-hidden p-4 animate-pulse">
-                <div className="w-24 h-4 bg-muted-foreground/20 rounded-sm "></div>
-                <div className="w-16 h-4 bg-muted-foreground/20 rounded-sm mt-2"></div>
-                <div className="w-full h-24 bg-muted-foreground/20 rounded-sm mt-4"></div>
-                <div className="w-24 mx-auto aspect-square rounded-sm mt-4 bg-muted-foreground/20"></div>
+                <div className="w-24 h-4 bg-muted-foreground/20 rounded-sm" />
+                <div className="w-16 h-4 bg-muted-foreground/20 rounded-sm mt-2" />
+                <div className="w-full h-24 bg-muted-foreground/20 rounded-sm mt-4" />
+                <div className="w-48 mx-auto aspect-square rounded-sm mt-4 bg-muted-foreground/20" />
             </div>
         </div>
     );

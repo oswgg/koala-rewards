@@ -14,7 +14,14 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
         supabase.auth.getSession().then(({ data }) => {
             if (!data.session) {
-                router.replace(customerRoutes.login);
+                const returnUrl =
+                    typeof window !== 'undefined'
+                        ? encodeURIComponent(window.location.href)
+                        : '';
+                const loginUrl = returnUrl
+                    ? `${customerRoutes.login}?returnUrl=${returnUrl}`
+                    : customerRoutes.login;
+                router.replace(loginUrl);
             } else {
                 setReady(true);
             }

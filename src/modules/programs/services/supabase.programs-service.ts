@@ -37,7 +37,6 @@ export const supabaseProgramsService: ProgramsService = {
             .eq('is_active', true)
             .maybeSingle();
         if (error) throw error;
-        console.log(data);
         return data as StoredLoyaltyProgram | null;
     },
 };

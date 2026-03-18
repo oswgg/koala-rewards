@@ -1,14 +1,27 @@
-import { useMutation } from '@tanstack/react-query';
-import { membershipService } from '../services/implementation.membership-service';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { customerMembershipRepository } from '../repositories/customer-membership.factory';
+import type { ProgramSnapshot } from '../datasources/types.membership-datasource';
 
 export function useJoinProgram() {
+    const queryClient = useQueryClient();
     return useMutation({
+        networkMode: 'always',
         mutationFn: async ({
-            programId,
+            programPublicId,
             userId,
+            programSnapshot,
         }: {
-            programId: string;
+            programPublicId: string;
             userId: string;
-        }) => membershipService.create(programId, userId),
+            programSnapshot: ProgramSnapshot;
+        }) =>
+            customerMembershipRepository.createByProgramPublicId(
+                programPublicId,
+                userId,
+                programSnapshot
+            ),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['memberships'] });
+        },
     });
 }

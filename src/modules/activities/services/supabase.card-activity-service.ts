@@ -79,7 +79,13 @@ export const supabaseCardActivityService: CardActivityService = {
         const currentBalance = Number(membership.balance);
         const rewardCost = programTyped.reward_cost ?? 0;
 
-        if (!isRewardReady(programTyped, currentBalance)) {
+        if (
+            !isRewardReady({
+                programType: programTyped.type,
+                rewardCost: rewardCost,
+                balance: currentBalance,
+            })
+        ) {
             throw new Error('El cliente no tiene saldo suficiente para canjear la recompensa');
         }
 

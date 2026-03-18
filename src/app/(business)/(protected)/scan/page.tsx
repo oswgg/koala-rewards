@@ -49,11 +49,10 @@ export default function ScanPage() {
 
                 await html5QrCode.start(
                     { facingMode: 'environment' },
-                    { fps: 10, qrbox: { width: 250, height: 250 } },
+                    { fps: 15, qrbox: { width: 250, height: 250 }, disableFlip: true },
                     (decodedText) => {
                         if (!mounted || processedRef.current) return;
                         const data = parseCustomerQR(decodedText);
-                        console.log({ data });
                         if (data) {
                             processedRef.current = true;
                             stopScanner();
@@ -110,8 +109,7 @@ export default function ScanPage() {
                 <main className="flex-1 overflow-auto p-4">
                     <div className="mx-auto max-w-md">
                         <ScanActivityForm
-                            membershipClientId={scannedData.membership_client_id}
-                            programId={scannedData.program_id}
+                            programPublicId={scannedData.program_public_id}
                             userId={scannedData.user_id}
                             onScanAnother={handleScanAnother}
                         />

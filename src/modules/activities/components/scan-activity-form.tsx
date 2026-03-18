@@ -15,15 +15,13 @@ import { isRewardReady } from '@/shared/lib/reward';
 import { businessRoutes } from '@/shared/lib/routes';
 
 interface ScanActivityFormProps {
-    membershipClientId: string;
-    programId: string;
+    programPublicId: string;
     userId: string;
     onScanAnother?: () => void;
 }
 
 export function ScanActivityForm({
-    membershipClientId,
-    programId,
+    programPublicId,
     userId,
     onScanAnother,
 }: ScanActivityFormProps) {
@@ -33,7 +31,7 @@ export function ScanActivityForm({
         data: membership,
         isLoading,
         isError,
-    } = useMembershipByClientId(membershipClientId, programId, userId);
+    } = useMembershipByClientId(programPublicId, userId);
 
     const { data: staff, isLoading: staffLoading } = useStaff();
     const registerMutation = useRegisterActivity();
@@ -125,7 +123,11 @@ export function ScanActivityForm({
     const displayBalance = redeemResult?.newBalance ?? earnResult?.newBalance ?? membership.balance;
     const rewardReady =
         (program.type === 'stamps' || program.type === 'points') &&
-        isRewardReady(program, displayBalance);
+        isRewardReady({
+            programType: program.type,
+            rewardCost: program.reward_cost ?? 0,
+            balance: displayBalance,
+        });
 
     const formatEarned = () => {
         if (!earnResult) return null;
@@ -141,8 +143,15 @@ export function ScanActivityForm({
         <div className="space-y-6">
             <div className="mx-auto w-full max-w-md px-1">
                 <MembershipCardPreview
-                    membership={{ ...membership, balance: displayBalance }}
-                    index={0}
+                    businessName={membership.program.business.name}
+                    programName={membership.program.name}
+                    programType={membership.program.type}
+                    rewardDescription={membership.program.reward_description}
+                    rewardCost={membership.program.reward_cost ?? 0}
+                    cashbackPercentage={membership.program.cashback_percentage ?? 0}
+                    pointsPercentage={membership.program.points_percentage ?? 0}
+                    balance={membership.balance}
+                    cardTheme={membership.program.card_theme}
                 />
             </div>
 

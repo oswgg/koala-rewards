@@ -10,27 +10,27 @@ const NEWLY_ADDED_BADGE_DURATION_MS = 5000;
 const BALANCE_CHANGED_ANIMATION_MS = 2000;
 
 export function useWalletCards() {
-    const { user, isLoading: isUserLoading } = useUser();
     const queryClient = useQueryClient();
+    const { user, isLoading: isUserLoading } = useUser();
+
+    const [balanceChangedId, setBalanceChangedId] = useState<string | null>(null);
+    const [newlyAdded, setNewlyAdded] = useState<MembershipWithProgram | null>(null);
+
     const { memberships: userMemberships, isLoading: isMembershipsLoading } = useUserMemberships(
         user?.id
     );
-
-    const [balanceChangedId, setBalanceChangedId] = useState<string | null>(null);
+    const membershipIds = useMemo(() => userMemberships?.map((m) => m.id) ?? [], [userMemberships]);
     const onBalanceChange = useCallback((membershipId: string) => {
         setBalanceChangedId(membershipId);
     }, []);
     const onRedeem = useCallback(() => {
         fireCelebrationConfetti();
     }, []);
-    const membershipIds = useMemo(() => userMemberships?.map((m) => m.id) ?? [], [userMemberships]);
     useMembershipsRealtime(user?.id, {
         onBalanceChange,
         onRedeem,
         membershipIds,
     });
-
-    const [newlyAdded, setNewlyAdded] = useState<MembershipWithProgram | null>(null);
 
     const cards =
         newlyAdded && user

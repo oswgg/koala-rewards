@@ -15,14 +15,10 @@ export const typeConfig: Record<LoyaltyProgramType, { label: string }> = {
     cashback: { label: 'Tarjeta cashback' },
 };
 
-export interface CardTheme {
-    bg: string;
-    text: string;
-    sub: string;
-    stamp: string;
-    stampBg: string;
-    logo: string;
-}
+import type { CardTheme } from '@/shared/lib/card-themes';
+import { CARD_THEMES, getCardTheme } from '@/shared/lib/card-themes';
+
+export type { CardTheme };
 
 function getInitials(name: string): string {
     return name
@@ -33,86 +29,49 @@ function getInitials(name: string): string {
         .slice(0, 2);
 }
 
-function getRewardText(program: StoredLoyaltyProgram, balance: number): string {
-    switch (program.type) {
+function getRewardText({
+    programType,
+    rewardCost,
+    rewardDescription,
+    balance,
+    cashbackPercentage,
+    pointsPercentage,
+}: {
+    programType: LoyaltyProgramType;
+    rewardCost: number;
+    balance: number;
+    rewardDescription: string;
+    cashbackPercentage?: number;
+    pointsPercentage?: number;
+}): string {
+    switch (programType) {
         case 'stamps': {
-            const remaining = Math.max(0, program.reward_cost - balance);
+            const remaining = Math.max(0, rewardCost - balance);
             if (remaining <= 0) return '¡Recompensa disponible!';
-            return `Consigue ${remaining} más · ${program.reward_description}`;
+            return `Consigue ${remaining} más · ${rewardDescription}`;
         }
         case 'points': {
-            const remaining = Math.max(0, program.reward_cost - balance);
+            const remaining = Math.max(0, rewardCost - balance);
             if (remaining <= 0) return '¡Canjea tu recompensa!';
             return `${remaining} puntos más para tu recompensa`;
         }
         case 'cashback':
-            return `${program.cashback_percentage}% cashback en cada compra`;
+            return `${cashbackPercentage}% cashback en cada compra`;
     }
 }
 
-const NEUTRAL_THEME: CardTheme = {
-    bg: 'oklch(0.98 0 0)',
-    text: 'oklch(0.15 0 0)',
-    sub: 'oklch(0.45 0 0)',
-    stamp: 'oklch(0.7 0.1 250)',
-    stampBg: 'oklch(0.92 0 0)',
-    logo: 'oklch(0.9 0 0)',
-};
-
-export const CARD_THEMES: CardTheme[] = [
-    {
-        bg: '#1a3c5e',
-        text: '#fff',
-        sub: 'rgba(255,255,255,0.6)',
-        stamp: '#34d399',
-        stampBg: 'rgba(255,255,255,0.12)',
-        logo: 'rgba(255,255,255,0.18)',
-    },
-    {
-        bg: '#7c3aed',
-        text: '#fff',
-        sub: 'rgba(255,255,255,0.6)',
-        stamp: '#c4b5fd',
-        stampBg: 'rgba(255,255,255,0.12)',
-        logo: 'rgba(255,255,255,0.18)',
-    },
-    {
-        bg: '#d97706',
-        text: '#1c1917',
-        sub: 'rgba(0,0,0,0.5)',
-        stamp: '#78350f',
-        stampBg: 'rgba(0,0,0,0.08)',
-        logo: 'rgba(0,0,0,0.1)',
-    },
-    {
-        bg: '#dc2626',
-        text: '#fff',
-        sub: 'rgba(255,255,255,0.6)',
-        stamp: '#fee2e2',
-        stampBg: 'rgba(255,255,255,0.12)',
-        logo: 'rgba(255,255,255,0.18)',
-    },
-    {
-        bg: '#0d9488',
-        text: '#fff',
-        sub: 'rgba(255,255,255,0.6)',
-        stamp: '#99f6e4',
-        stampBg: 'rgba(255,255,255,0.12)',
-        logo: 'rgba(255,255,255,0.18)',
-    },
-    {
-        bg: '#2563eb',
-        text: '#fff',
-        sub: 'rgba(255,255,255,0.6)',
-        stamp: '#bfdbfe',
-        stampBg: 'rgba(255,255,255,0.12)',
-        logo: 'rgba(255,255,255,0.18)',
-    },
-];
+export { CARD_THEMES, getCardTheme };
 
 export interface MemberShipCardDetailViewProps {
-    program: StoredLoyaltyProgram;
+    // program: StoredLoyaltyProgram;
+    businessName: string;
+    programName: string;
     balance?: number;
+    programType: LoyaltyProgramType;
+    rewardDescription: string | null;
+    rewardCost: number;
+    cashbackPercentage?: number;
+    pointsPercentage?: number;
     qrUrl: string;
     theme?: CardTheme;
     variant?: 'business' | 'customer';
@@ -122,6 +81,8 @@ export interface MemberShipCardDetailViewProps {
     showQr?: boolean;
     /** Indica que el balance acaba de cambiar (para animación) */
     isBalanceJustChanged?: boolean;
+    /** Texto personalizado sobre el QR (reemplaza el texto por defecto según variant) */
+    qrLabel?: string;
 }
 
 /**
@@ -131,8 +92,14 @@ export interface MemberShipCardDetailViewProps {
  * - Business: QR para que clientes se unan al programa
  */
 export function MemberShipCardDetailView({
-    program,
+    businessName,
+    programName,
+    programType,
+    rewardDescription,
+    rewardCost,
     balance = 0,
+    cashbackPercentage,
+    pointsPercentage,
     qrUrl,
     theme: themeProp,
     variant = 'business',
@@ -140,10 +107,12 @@ export function MemberShipCardDetailView({
     size = 'lg',
     showQr = true,
     isBalanceJustChanged = false,
+    qrLabel,
 }: MemberShipCardDetailViewProps) {
-    const theme = themeProp ?? NEUTRAL_THEME;
-    const typeLabel = typeConfig[program.type].label;
-    const rewardReady = variant === 'customer' && isRewardReady(program, balance);
+    const theme = themeProp ?? CARD_THEMES.neutral;
+    const typeLabel = typeConfig[programType].label;
+    const rewardReady =
+        variant === 'customer' && isRewardReady({ programType, rewardCost, balance });
 
     return (
         <motion.div
@@ -177,7 +146,7 @@ export function MemberShipCardDetailView({
                 repeat: rewardReady ? Infinity : 0,
                 ease: 'easeInOut',
             }}
-            className="relative overflow-hidden rounded-3xl"
+            className="relative h-full overflow-hidden rounded-3xl"
         >
             {rewardReady && (
                 <div className="flex items-center justify-center gap-2 bg-emerald-500 p-3 text-xs font-bold text-white shadow-lg">
@@ -208,7 +177,7 @@ export function MemberShipCardDetailView({
                     className="flex size-12 shrink-0 items-center justify-center rounded-full text-base font-bold"
                     style={{ backgroundColor: theme.logo, color: theme.text }}
                 >
-                    {getInitials(program.name)}
+                    {getInitials(programName)}
                 </div>
                 <div className="min-w-0 flex-1">
                     <p
@@ -217,37 +186,37 @@ export function MemberShipCardDetailView({
                     >
                         {typeLabel}
                     </p>
-                    <h3 className="text-lg font-bold leading-tight">{program.business.name}</h3>
+                    <h3 className="text-lg font-bold leading-tight">{businessName}</h3>
                     <p className="mt-0.5 text-xs" style={{ color: theme.sub }}>
-                        {program.reward_description}
+                        {rewardDescription}
                     </p>
                 </div>
             </div>
 
             <div className="flex flex-col gap-4 px-6 pb-8">
-                <div className={size === 'sm' ? 'mt-1' : 'mt-2'}>
-                    {program.type === 'stamps' && (
+                <div className="mt-1">
+                    {programType === 'stamps' && (
                         <StampsDisplay
-                            total={program.reward_cost}
+                            total={rewardCost}
                             earned={balance}
                             theme={theme}
                             size={size}
                             animateNewStamp={isBalanceJustChanged}
                         />
                     )}
-                    {program.type === 'points' && (
+                    {programType === 'points' && (
                         <PointsDisplay
                             balance={balance}
-                            rewardCost={program.reward_cost}
+                            rewardCost={rewardCost}
                             theme={theme}
                             size={size}
                             animateChange={isBalanceJustChanged}
                         />
                     )}
-                    {program.type === 'cashback' && (
+                    {programType === 'cashback' && (
                         <CashbackDisplay
                             balance={balance}
-                            percentage={program.cashback_percentage}
+                            percentage={cashbackPercentage ?? 0}
                             theme={theme}
                             size={size}
                             animateChange={isBalanceJustChanged}
@@ -256,14 +225,15 @@ export function MemberShipCardDetailView({
                 </div>
 
                 {showQr && (
-                    <div className="flex flex-col items-center gap-2">
+                    <div className="flex flex-col items-center gap-2 mt-4">
                         <p
                             className="text-center text-[11px] font-medium"
                             style={{ color: theme.sub }}
                         >
-                            {variant === 'customer'
-                                ? 'Escanea para registrar visita o venta'
-                                : 'Escanea para unirte al programa'}
+                            {qrLabel ??
+                                (variant === 'customer'
+                                    ? 'Escanea para registrar visita o venta'
+                                    : 'Escanea para unirte al programa')}
                         </p>
                         <div
                             className="flex items-center justify-center rounded-xl p-2"
@@ -271,7 +241,8 @@ export function MemberShipCardDetailView({
                         >
                             <QRCode
                                 value={qrUrl}
-                                size={size === 'lg' ? 160 : 130}
+                                size={180}
+                                level="L"
                                 bgColor="#ffffff"
                                 fgColor="#0a0a0a"
                             />
@@ -279,15 +250,24 @@ export function MemberShipCardDetailView({
                     </div>
                 )}
 
-                <p
-                    className={`text-center font-medium ${rewardReady ? 'text-sm font-bold' : 'text-xs'}`}
-                    style={{
-                        color: rewardReady ? '#22c55e' : theme.sub,
-                        textShadow: rewardReady ? '0 0 16px rgba(34, 197, 94, 0.5)' : undefined,
-                    }}
-                >
-                    {getRewardText(program, balance)}
-                </p>
+                {rewardDescription && (
+                    <p
+                        className={`text-center font-medium ${rewardReady ? 'text-sm font-bold' : 'text-xs'}`}
+                        style={{
+                            color: rewardReady ? '#22c55e' : theme.sub,
+                            textShadow: rewardReady ? '0 0 16px rgba(34, 197, 94, 0.5)' : undefined,
+                        }}
+                    >
+                        {getRewardText({
+                            programType,
+                            rewardCost,
+                            balance,
+                            rewardDescription,
+                            cashbackPercentage,
+                            pointsPercentage,
+                        })}
+                    </p>
+                )}
             </div>
         </motion.div>
     );

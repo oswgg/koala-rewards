@@ -43,25 +43,30 @@ export function DetailInfo({ prevStep, nextStep }: DetailInfoProps) {
                                 </div>
                             )}
                         </form.Field>
-                        <form.Field name="reward_description">
-                            {(field) => (
-                                <div className="space-y-2">
-                                    <FieldLabel htmlFor="reward_description">Recompensa</FieldLabel>
-                                    <Input
-                                        id="reward_description"
-                                        value={field.state.value ?? ''}
-                                        onChange={(e) => field.handleChange(e.target.value)}
-                                        placeholder="Ej: Café gratis"
-                                        className="h-10"
-                                    />
-                                    {field.state.meta.errors?.length ? (
-                                        <p className="text-sm text-destructive">
-                                            {field.state.meta.errors?.[0]}
-                                        </p>
-                                    ) : null}
-                                </div>
-                            )}
-                        </form.Field>
+
+                        {programType !== 'cashback' && (
+                            <form.Field name="reward_description">
+                                {(field) => (
+                                    <div className="space-y-2">
+                                        <FieldLabel htmlFor="reward_description">
+                                            Recompensa
+                                        </FieldLabel>
+                                        <Input
+                                            id="reward_description"
+                                            value={field.state.value ?? ''}
+                                            onChange={(e) => field.handleChange(e.target.value)}
+                                            placeholder="Ej: Café gratis"
+                                            className="h-10"
+                                        />
+                                        {field.state.meta.errors?.length ? (
+                                            <p className="text-sm text-destructive">
+                                                {field.state.meta.errors?.[0]}
+                                            </p>
+                                        ) : null}
+                                    </div>
+                                )}
+                            </form.Field>
+                        )}
 
                         {programType === 'stamps' && (
                             <form.Field name="reward_cost">

@@ -3,10 +3,13 @@
 import { useTypedAppFormContext } from '@/infrastructure/tanstack-form/form-context';
 import { createProgramFormOptions } from '@/modules/programs/hooks/useCreateLoyaltyProgram';
 import { Button } from '@/shared/components/ui/button';
+import { FieldLabel } from '@/shared/components/ui/field';
 import {
     MemberShipCardDetailView,
-    CARD_THEMES,
+    getCardTheme,
 } from '@/shared/components/wallets/mermbership-card-detail';
+import { CARD_THEMES, CARD_THEME_NAMES } from '@/shared/lib/card-themes';
+import type { CardThemeName } from '@/shared/lib/card-themes';
 import { buildProgramJoinUrl } from '@/shared/lib/qr-data';
 import type { StoredLoyaltyProgram } from '@/shared/types/loyalty-program';
 
@@ -25,6 +28,7 @@ function toPreviewProgram(values: Record<string, unknown>): StoredLoyaltyProgram
         name: String(values.name ?? ''),
         reward_description: String(values.reward_description ?? ''),
         limit_one_per_day: Boolean(values.limit_one_per_day ?? false),
+        card_theme: (String(values.card_theme ?? 'neutral') || 'neutral') as CardThemeName,
         business: {
             id: '',
             name: '',
@@ -54,6 +58,7 @@ function toPreviewProgram(values: Record<string, unknown>): StoredLoyaltyProgram
     return {
         ...base,
         type: 'cashback',
+        reward_description: null,
         cashback_percentage: Number(values.cashback_percentage ?? 5),
         points_percentage: null,
         reward_cost: null,
@@ -81,18 +86,64 @@ export function ConfirmStep({ prevStep, isSubmitting }: ConfirmStepProps) {
                 {(values) => {
                     const program = toPreviewProgram(values as Record<string, unknown>);
                     const joinUrl = buildProgramJoinUrl(baseUrl, program);
-                    const theme = CARD_THEMES[0];
+                    const theme = getCardTheme(values.card_theme);
                     return (
-                        <div className="flex justify-center rounded-xl border border-border bg-muted/30 p-8">
-                            <div className="w-[320px] overflow-hidden rounded-3xl shadow-lg">
-                                <MemberShipCardDetailView
-                                    program={program}
+                        <div className="space-y-6">
+                            <form.Field name="card_theme">
+                                {(field) => (
+                                    <div className="space-y-2">
+                                        <FieldLabel>Elige el color de tu tarjeta</FieldLabel>
+                                        <div className="grid grid-cols-7 gap-2">
+                                            {CARD_THEME_NAMES.map((name) => {
+                                                const th = CARD_THEMES[name];
+                                                const isSelected =
+                                                    (field.state.value ?? 'neutral') === name;
+                                                return (
+                                                    <button
+                                                        key={name}
+                                                        type="button"
+                                                        title={th.name}
+                                                        onClick={() =>
+                                                            field.handleChange(name as CardThemeName)
+                                                        }
+                                                        className={`flex h-10 flex-col items-center justify-center rounded-lg border-2 transition-colors ${
+                                                            isSelected
+                                                                ? 'border-primary ring-2 ring-primary/20'
+                                                                : 'border-border hover:border-muted-foreground'
+                                                        }`}
+                                                        style={{ backgroundColor: th.bg }}
+                                                    >
+                                                        <span
+                                                            className="truncate px-1 text-[10px] font-medium max-w-full"
+                                                            style={{ color: th.text }}
+                                                        >
+                                                            {th.name}
+                                                        </span>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
+                            </form.Field>
+
+                            <div className="flex justify-center rounded-xl border border-border bg-muted/30 p-8">
+                                <div className="min-w-[360px] overflow-hidden rounded-3xl shadow-lg">
+                                    <MemberShipCardDetailView
+                                    businessName={program.business.name}
+                                    programName={program.name}
+                                    programType={program.type}
+                                    rewardDescription={program.reward_description}
+                                    rewardCost={program.reward_cost ?? 0}
+                                    cashbackPercentage={program.cashback_percentage ?? 0}
+                                    pointsPercentage={program.points_percentage ?? 0}
                                     balance={0}
                                     qrUrl={joinUrl}
                                     theme={theme}
                                     variant="business"
                                     size="lg"
                                 />
+                                </div>
                             </div>
                         </div>
                     );

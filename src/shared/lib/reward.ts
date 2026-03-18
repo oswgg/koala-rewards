@@ -1,10 +1,18 @@
-import type { StoredLoyaltyProgram } from '@/shared/types/loyalty-program';
+import type { LoyaltyProgramType, StoredLoyaltyProgram } from '@/shared/types/loyalty-program';
 
 /**
  * Indica si el usuario tiene saldo suficiente para canjear su recompensa.
  * Solo aplica a stamps y points; cashback no tiene recompensa canjeable.
  */
-export function isRewardReady(program: StoredLoyaltyProgram, balance: number): boolean {
-    if (program.type === 'cashback' || program.reward_cost == null) return false;
-    return balance >= program.reward_cost;
+export function isRewardReady({
+    programType,
+    rewardCost,
+    balance,
+}: {
+    programType: LoyaltyProgramType;
+    rewardCost: number;
+    balance: number;
+}): boolean {
+    if (programType === 'cashback' || rewardCost == null) return false;
+    return balance >= rewardCost;
 }

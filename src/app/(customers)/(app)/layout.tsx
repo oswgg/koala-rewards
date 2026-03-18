@@ -1,11 +1,12 @@
 import { AuthGuard } from '@/shared/components/auth-guard';
+import { MembershipSyncProvider } from '@/modules/memberships/components/membership-sync-provider';
 
 export default function CustomerLayout({ children }: { children: React.ReactNode }) {
-    // await requireAuth(customerRoutes.login);
-
     return (
         <AuthGuard>
-            <div>{children}</div>
+            <MembershipSyncProvider>
+                <div>{children}</div>
+            </MembershipSyncProvider>
         </AuthGuard>
     );
 }

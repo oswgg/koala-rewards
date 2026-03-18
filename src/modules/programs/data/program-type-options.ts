@@ -1,5 +1,3 @@
-import { Banknote, Coins, Stamp, StampIcon } from 'lucide-react';
-
 import type { FormRadioGroupOption } from '@/shared/components/form-radio-group';
 import type { LoyaltyProgramType } from '@/shared/types/loyalty-program';
 

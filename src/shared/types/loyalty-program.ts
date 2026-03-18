@@ -1,11 +1,12 @@
+import type { CardThemeName } from '@/shared/lib/card-themes';
 import { Business } from './business';
 
 export type LoyaltyProgramType = 'points' | 'cashback' | 'stamps';
 
 interface BaseProgram {
     name: string;
-    reward_description: string;
     limit_one_per_day: boolean;
+    card_theme?: CardThemeName;
 }
 
 interface ImmutableStoredFields {
@@ -23,6 +24,7 @@ export interface PointsProgram extends BaseProgram {
     type: 'points';
     points_percentage: number;
     cashback_percentage: null;
+    reward_description: string;
     reward_cost: number;
 }
 
@@ -30,14 +32,16 @@ export interface CashbackProgram extends BaseProgram {
     type: 'cashback';
     cashback_percentage: number;
     points_percentage: null;
+    reward_description: null;
     reward_cost: null;
 }
 
 export interface StampsProgram extends BaseProgram {
     type: 'stamps';
-    reward_cost: number;
     points_percentage: null;
     cashback_percentage: null;
+    reward_description: string;
+    reward_cost: number;
 }
 
 export type LoyaltyProgram = PointsProgram | CashbackProgram | StampsProgram;

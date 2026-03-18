@@ -2,10 +2,9 @@
 
 import { Gift } from 'lucide-react';
 import { motion } from 'motion/react';
-import { MembershipWithProgram } from '@/modules/memberships/services/interface.membership-service';
 import { isRewardReady } from '@/shared/lib/reward';
-import { CARD_THEMES, CardTheme } from './mermbership-card-detail';
-import { StoredLoyaltyProgram } from '@/shared/types/loyalty-program';
+import { getCardTheme, type CardTheme } from './mermbership-card-detail';
+import { LoyaltyProgramType } from '@/shared/types/loyalty-program';
 import { StampsDisplay } from './stamps-display';
 import { PointsDisplay } from './points-display';
 import { CashbackDisplay } from './cashback-display';
@@ -22,35 +21,62 @@ function getInitials(name: string): string {
         .slice(0, 2);
 }
 
-function getRewardText(program: StoredLoyaltyProgram, balance: number): string {
-    switch (program.type) {
+function getRewardText({
+    programType,
+    rewardCost,
+    balance,
+    rewardDescription,
+    cashbackPercentage,
+}: {
+    programType: LoyaltyProgramType;
+    rewardCost: number;
+    balance: number;
+    rewardDescription: string;
+    cashbackPercentage: number;
+}): string {
+    switch (programType) {
         case 'stamps': {
-            const remaining = Math.max(0, program.reward_cost - balance);
+            const remaining = Math.max(0, rewardCost - balance);
             if (remaining <= 0) return '¡Recompensa disponible!';
-            return `Consigue ${remaining} más · ${program.reward_description}`;
+            return `Consigue ${remaining} más · ${rewardDescription}`;
         }
         case 'points': {
-            const remaining = Math.max(0, program.reward_cost - balance);
+            const remaining = Math.max(0, rewardCost - balance);
             if (remaining <= 0) return '¡Canjea tu recompensa!';
             return `${remaining} puntos más para tu recompensa`;
         }
         case 'cashback':
-            return `${program.cashback_percentage}% cashback en cada compra`;
+            return `${cashbackPercentage}% cashback en cada compra`;
     }
 }
 
-export function MembershipCardPreview({
-    membership,
-    index,
-    isBalanceJustChanged = false,
-}: {
-    membership: MembershipWithProgram;
-    index: number;
+export interface MembershipCardPreviewProps {
+    cardTheme?: string | null;
     isBalanceJustChanged?: boolean;
-}) {
-    const theme = CARD_THEMES[index % CARD_THEMES.length];
-    const { program, balance } = membership;
-    const rewardReady = isRewardReady(program, balance);
+    businessName: string;
+    programName: string;
+    programType: LoyaltyProgramType;
+    rewardDescription: string | null;
+    rewardCost: number;
+    balance: number;
+    cashbackPercentage: number;
+    pointsPercentage: number;
+}
+
+export function MembershipCardPreview({
+    cardTheme,
+    isBalanceJustChanged = false,
+    businessName,
+    programName,
+    programType,
+    rewardDescription,
+    rewardCost,
+    cashbackPercentage,
+    pointsPercentage,
+    balance,
+}: MembershipCardPreviewProps) {
+    const theme = getCardTheme(cardTheme);
+    const rewardReady = isRewardReady({ programType, rewardCost, balance });
 
     return (
         <motion.div
@@ -94,38 +120,49 @@ export function MembershipCardPreview({
                     className="flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-bold"
                     style={{ backgroundColor: theme.logo, color: theme.text }}
                 >
-                    {getInitials(program.name)}
+                    {getInitials(programName)}
                 </div>
                 <div className="min-w-0 flex-1">
                     <h3 className="truncate text-[15px] font-semibold leading-tight">
-                        {program.business.name}
+                        {businessName}
                     </h3>
                     <p className="mt-0.5 truncate text-xs" style={{ color: theme.sub }}>
-                        {program.reward_description}
+                        {rewardDescription}
                     </p>
                 </div>
             </div>
 
             <div className="px-5">
                 <CardBody
-                    program={program}
+                    programType={programType}
+                    rewardCost={rewardCost}
+                    rewardDescription={rewardDescription}
+                    cashbackPercentage={cashbackPercentage}
                     balance={balance}
                     theme={theme}
                     isBalanceJustChanged={isBalanceJustChanged}
                 />
             </div>
 
-            <div className="absolute bottom-4 left-5 right-5">
-                <p
-                    className={`font-medium ${rewardReady ? 'text-sm font-semibold' : 'text-xs'}`}
-                    style={{
-                        color: rewardReady ? '#22c55e' : theme.sub,
-                        textShadow: rewardReady ? '0 0 12px rgba(34, 197, 94, 0.4)' : undefined,
-                    }}
-                >
-                    {getRewardText(program, balance)}
-                </p>
-            </div>
+            {rewardDescription && (
+                <div className="absolute bottom-4 left-5 right-5">
+                    <p
+                        className={`font-medium ${rewardReady ? 'text-sm font-semibold' : 'text-xs'}`}
+                        style={{
+                            color: rewardReady ? '#22c55e' : theme.sub,
+                            textShadow: rewardReady ? '0 0 12px rgba(34, 197, 94, 0.4)' : undefined,
+                        }}
+                    >
+                        {getRewardText({
+                            programType,
+                            rewardCost,
+                            balance,
+                            rewardDescription,
+                            cashbackPercentage,
+                        })}
+                    </p>
+                </div>
+            )}
 
             <div
                 className="pointer-events-none absolute inset-x-0 bottom-0 h-12 rounded-b-2xl"
@@ -138,13 +175,19 @@ export function MembershipCardPreview({
 }
 
 function CardBody({
-    program,
+    programType,
+    rewardCost,
+    rewardDescription,
+    cashbackPercentage,
     balance,
     theme,
     size = 'sm',
     isBalanceJustChanged = false,
 }: {
-    program: StoredLoyaltyProgram;
+    programType: LoyaltyProgramType;
+    rewardCost: number;
+    rewardDescription: string | null;
+    cashbackPercentage: number;
     balance: number;
     theme: CardTheme;
     size?: 'sm' | 'lg';
@@ -152,28 +195,28 @@ function CardBody({
 }) {
     return (
         <>
-            {program.type === 'stamps' && (
+            {programType === 'stamps' && (
                 <StampsDisplay
-                    total={program.reward_cost}
+                    total={rewardCost}
                     earned={balance}
                     theme={theme}
                     size={size}
                     animateNewStamp={isBalanceJustChanged}
                 />
             )}
-            {program.type === 'points' && (
+            {programType === 'points' && (
                 <PointsDisplay
                     balance={balance}
-                    rewardCost={program.reward_cost}
+                    rewardCost={rewardCost}
                     theme={theme}
                     size={size}
                     animateChange={isBalanceJustChanged}
                 />
             )}
-            {program.type === 'cashback' && (
+            {programType === 'cashback' && (
                 <CashbackDisplay
                     balance={balance}
-                    percentage={program.cashback_percentage}
+                    percentage={cashbackPercentage}
                     theme={theme}
                     size={size}
                     animateChange={isBalanceJustChanged}

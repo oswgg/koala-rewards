@@ -3,8 +3,9 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import type { MembershipWithProgram } from '@/modules/memberships/services/interface.membership-service';
-import { DetailedCard } from './detailed-card';
 import { CARD_HEIGHT, MembershipCardPreview, PEEK } from './membership-card-preview';
+import { getCardTheme, MemberShipCardDetailView } from './mermbership-card-detail';
+import { buildCustomerQRValue } from '@/shared/lib/qr-data';
 
 const spring = { type: 'spring' as const, stiffness: 400, damping: 30 };
 
@@ -43,7 +44,9 @@ export function CardWallet({
     if (memberships.length === 0) {
         return (
             <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-                <p className="text-lg font-semibold text-foreground">No tienes tarjetas aún</p>
+                <p className="text-lg font-open-sauce font-bold text-foreground">
+                    No tienes tarjetas aún
+                </p>
                 <p className="mt-1 text-sm text-muted-foreground">
                     Escanea un código QR para agregar tu primera tarjeta
                 </p>
@@ -97,9 +100,16 @@ export function CardWallet({
                                     </motion.span>
                                 )}
                                 <MembershipCardPreview
-                                    membership={m}
-                                    index={i}
+                                    cardTheme={m.program.card_theme}
                                     isBalanceJustChanged={isBalanceJustChanged}
+                                    businessName={m.program.business.name}
+                                    programName={m.program.name}
+                                    programType={m.program.type}
+                                    rewardDescription={m.program.reward_description}
+                                    rewardCost={m.program.reward_cost ?? 0}
+                                    cashbackPercentage={m.program.cashback_percentage ?? 0}
+                                    pointsPercentage={m.program.points_percentage ?? 0}
+                                    balance={m.balance}
                                 />
                             </div>
                         </motion.div>
@@ -130,13 +140,30 @@ export function CardWallet({
                             transition={spring}
                             className="fixed inset-x-0 top-16 z-70 mx-auto w-full max-w-md px-4"
                         >
-                            <DetailedCard
-                                membership={memberships[expandedIndex]}
-                                index={expandedIndex}
+                            <MemberShipCardDetailView
+                                businessName={memberships[expandedIndex].program.business.name}
+                                programName={memberships[expandedIndex].program.name}
+                                programType={memberships[expandedIndex].program.type}
+                                rewardDescription={
+                                    memberships[expandedIndex].program.reward_description
+                                }
+                                rewardCost={memberships[expandedIndex].program.reward_cost ?? 0}
+                                cashbackPercentage={
+                                    memberships[expandedIndex].program.cashback_percentage ?? 0
+                                }
+                                pointsPercentage={
+                                    memberships[expandedIndex].program.points_percentage ?? 0
+                                }
+                                balance={memberships[expandedIndex].balance}
                                 onClose={handleCollapse}
                                 isBalanceJustChanged={
                                     balanceChangedId === memberships[expandedIndex]?.id
                                 }
+                                qrUrl={buildCustomerQRValue(
+                                    memberships[expandedIndex].program.public_id,
+                                    memberships[expandedIndex].user_id
+                                )}
+                                theme={getCardTheme(memberships[expandedIndex].program.card_theme)}
                             />
                         </motion.div>
                     </>

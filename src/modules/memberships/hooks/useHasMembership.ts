@@ -1,11 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import { membershipService } from '../services/implementation.membership-service';
+import { customerMembershipRepository } from '../repositories/customer-membership.factory';
 
 export function useHasMembership(programId: string | undefined, userId: string | undefined) {
     const query = useQuery({
         queryKey: ['membership', programId, userId],
-        queryFn: () => membershipService.hasMembership(programId!, userId!),
+        queryFn: () =>
+            customerMembershipRepository.hasMembership(programId!, userId!),
         enabled: !!programId && !!userId,
+        networkMode: 'always',
     });
 
     return {

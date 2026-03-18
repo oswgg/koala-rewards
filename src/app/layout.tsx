@@ -1,13 +1,48 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
-
-import './globals.css';
+import { Inter } from 'next/font/google';
 import { QueryProvider } from '@/app/_providers/query-provider';
 import { ThemeProvider } from '@/app/_providers/theme-provider';
 import { cn } from '@/shared/lib/utils';
+import './globals.css';
+import localFont from 'next/font/local';
 
-const APP_NAME = 'KoalaCards';
+const APP_NAME = 'KoalaRewards';
 const APP_DESCRIPTION = 'Tus tarjetas de fidelidad en un solo lugar';
+
+export const viewport: Viewport = {
+    themeColor: '#0f172a',
+};
+
+const fontOpenSauce = localFont({
+    src: [
+        {
+            path: '../../public/fonts/open_sauce/OpenSauceOne-Regular.ttf',
+            weight: '400',
+            style: 'normal',
+        },
+        {
+            path: '../../public/fonts/open_sauce/OpenSauceOne-Medium.ttf',
+            weight: '500',
+            style: 'normal',
+        },
+        {
+            path: '../../public/fonts/open_sauce/OpenSauceOne-Bold.ttf',
+            weight: '700',
+            style: 'normal',
+        },
+        {
+            path: '../../public/fonts/open_sauce/OpenSauceOne-Black.ttf',
+            weight: '900',
+            style: 'normal',
+        },
+    ],
+    variable: '--font-open-sauce-family',
+});
+
+const fontInter = Inter({
+    subsets: ['latin'],
+    variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
     applicationName: APP_NAME,
@@ -27,20 +62,6 @@ export const metadata: Metadata = {
     },
 };
 
-export const viewport: Viewport = {
-    themeColor: '#0f172a',
-};
-
-const fontSans = Geist({
-    subsets: ['latin'],
-    variable: '--font-sans',
-});
-
-const fontMono = Geist_Mono({
-    subsets: ['latin'],
-    variable: '--font-mono',
-});
-
 export default function RootLayout({
     children,
 }: Readonly<{
@@ -50,7 +71,7 @@ export default function RootLayout({
         <html
             lang="en"
             suppressHydrationWarning
-            className={cn('antialiased', fontMono.variable, 'font-sans', fontSans.variable)}
+            className={cn('antialiased', fontInter.variable, fontOpenSauce.variable)}
         >
             <body>
                 <QueryProvider>

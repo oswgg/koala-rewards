@@ -26,7 +26,6 @@ function toProgramMembership(data: Record<string, unknown>): ProgramMembership {
         id: data.id,
         program_id: data.program_id,
         user_id: data.user_id,
-        membership_client_id: data.membership_client_id,
         balance: data.balance,
         created_at: data.created_at,
         public_id: data.public_id,
@@ -37,35 +36,11 @@ function toProgramMembership(data: Record<string, unknown>): ProgramMembership {
 export const supabaseMembershipService: MembershipService = {
     create: async (programId: string, userId: string): Promise<ProgramMembership> => {
         const supabase = createClient();
-        const membershipClientId = crypto.randomUUID();
         const { data, error } = await supabase
             .from('program_memberships')
             .insert({
                 program_id: programId,
                 user_id: userId,
-                membership_client_id: membershipClientId,
-                balance: 0,
-            })
-            .select(MEMBERSHIP_WITH_PROGRAM_AND_BUSINESS)
-            .single();
-
-        if (error) throw error;
-        return toProgramMembership(data);
-    },
-
-    createWithClientId: async (
-        programId: string,
-        userId: string,
-        membershipClientId: string
-    ): Promise<ProgramMembership> => {
-        const supabase = createClient();
-
-        const { data, error } = await supabase
-            .from('program_memberships')
-            .insert({
-                program_id: programId,
-                user_id: userId,
-                membership_client_id: membershipClientId,
                 balance: 0,
             })
             .select(MEMBERSHIP_WITH_PROGRAM_AND_BUSINESS)
@@ -113,12 +88,13 @@ export const supabaseMembershipService: MembershipService = {
         return toMembershipWithProgram(data);
     },
 
-    getByClientId: async (membershipClientId: string) => {
+    getByProgramIdAndUserId: async (programId: string, userId: string) => {
         const supabase = createClient();
         const { data, error } = await supabase
             .from('program_memberships')
             .select(MEMBERSHIP_WITH_PROGRAM_AND_BUSINESS)
-            .eq('membership_client_id', membershipClientId)
+            .eq('program_id', programId)
+            .eq('user_id', userId)
             .maybeSingle();
 
         if (error) throw error;
@@ -126,4 +102,65 @@ export const supabaseMembershipService: MembershipService = {
         return toMembershipWithProgram(data);
     },
 
+    getByProgramPublicIdAndUserId: async (programPublicId: string, userId: string) => {
+        const supabase = createClient();
+        const { data: program, error: programError } = await supabase
+            .from('loyalty_programs')
+            .select('id')
+            .eq('public_id', programPublicId)
+            .eq('is_active', true)
+            .maybeSingle();
+
+        if (programError || !program) return null;
+
+        const { data, error } = await supabase
+            .from('program_memberships')
+            .select(MEMBERSHIP_WITH_PROGRAM_AND_BUSINESS)
+            .eq('program_id', program.id)
+            .eq('user_id', userId)
+            .maybeSingle();
+
+        if (error) throw error;
+        return data ? toMembershipWithProgram(data) : null;
+    },
+
+    createByProgramPublicIdAndUserId: async (programPublicId: string, userId: string) => {
+        const supabase = createClient();
+        const { data: program, error: programError } = await supabase
+            .from('loyalty_programs')
+            .select('id')
+            .eq('public_id', programPublicId)
+            .eq('is_active', true)
+            .maybeSingle();
+
+        if (programError || !program) return null;
+
+        const { data: created, error: insertError } = await supabase
+            .from('program_memberships')
+            .insert({
+                program_id: program.id,
+                user_id: userId,
+                balance: 0,
+            })
+            .select(MEMBERSHIP_WITH_PROGRAM_AND_BUSINESS)
+            .single();
+
+        if (insertError) {
+            const isDuplicate =
+                insertError.code === '23505' ||
+                /unique|duplicate|23505/i.test(String(insertError.message ?? ''));
+            if (isDuplicate) {
+                const { data: existing } = await supabase
+                    .from('program_memberships')
+                    .select(MEMBERSHIP_WITH_PROGRAM_AND_BUSINESS)
+                    .eq('program_id', program.id)
+                    .eq('user_id', userId)
+                    .maybeSingle();
+                return existing ? toMembershipWithProgram(existing) : null;
+            }
+            throw insertError;
+        }
+
+        return created ? toMembershipWithProgram(created) : null;
+    },
 };

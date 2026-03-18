@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { AlertDialog } from 'radix-ui';
 import { CircleUser, CreditCard, LogOut, Plus, Bell } from 'lucide-react';
@@ -10,15 +10,42 @@ import { Button } from '@/shared/components/ui/button';
 import { CardWallet } from '@/shared/components/wallets/card-wallet';
 import { CardWalletSkeleton } from '@/shared/components/wallets/card-wallet-skeleton';
 import { JoinProgramScanner } from './join-program-scanner';
+import { JoinProgramModal } from './join-program-modal';
 import { useWalletCards } from '../hooks/useWalletCards';
+import type { JoinProgramQRData } from '@/shared/lib/qr-data';
 import { cn } from '@/shared/lib/utils';
 
-export function CustomerWalletView() {
+export interface CustomerWalletViewProps {
+    /** Join data from ?j= query param (when user enters via URL) */
+    initialJoinData?: JoinProgramQRData | null;
+    /** Called when user closes the join modal that was opened from URL (to clear ?j=) */
+    onJoinModalCloseFromUrl?: () => void;
+}
+
+export function CustomerWalletView({
+    initialJoinData,
+    onJoinModalCloseFromUrl,
+}: CustomerWalletViewProps) {
     const router = useRouter();
     const [scannerOpen, setScannerOpen] = useState(false);
     const [logoutOpen, setLogoutOpen] = useState(false);
+    const [joinDataFromScan, setJoinDataFromScan] = useState<JoinProgramQRData | null>(null);
+
     const { cards, newlyAddedId, balanceChangedId, handleJoinSuccess, isLoading } =
         useWalletCards();
+
+    const joinModalData = initialJoinData ?? joinDataFromScan;
+
+    const handleScanSuccess = useCallback((data: JoinProgramQRData) => {
+        setJoinDataFromScan(data);
+    }, []);
+
+    const handleJoinModalClose = useCallback(() => {
+        if (joinModalData === initialJoinData) {
+            onJoinModalCloseFromUrl?.();
+        }
+        setJoinDataFromScan(null);
+    }, [joinModalData, initialJoinData, onJoinModalCloseFromUrl]);
 
     const handleSignOut = async () => {
         setLogoutOpen(false);
@@ -31,7 +58,7 @@ export function CustomerWalletView() {
             <header className="sticky top-0 z-50 flex items-center justify-between bg-white/80 px-5 py-3 backdrop-blur-xl dark:bg-neutral-900/80">
                 <div className="flex items-center gap-2.5">
                     <CircleUser strokeWidth={1.5} className="size-7 text-foreground" />
-                    <h1 className="text-xl font-bold tracking-tight text-foreground">
+                    <h1 className="text-xl font-open-sauce font-black tracking-tight text-foreground">
                         Mis Tarjetas
                     </h1>
                 </div>
@@ -126,8 +153,20 @@ export function CustomerWalletView() {
             <JoinProgramScanner
                 open={scannerOpen}
                 onOpenChange={setScannerOpen}
-                onJoinSuccess={handleJoinSuccess}
+                onScanSuccess={handleScanSuccess}
             />
+
+            {joinModalData && (
+                <JoinProgramModal
+                    data={joinModalData}
+                    open={!!joinModalData}
+                    onOpenChange={(open) => {
+                        if (!open) handleJoinModalClose();
+                    }}
+                    onClose={handleJoinModalClose}
+                    onJoinSuccess={handleJoinSuccess}
+                />
+            )}
         </div>
     );
 }

@@ -2,29 +2,25 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { membershipService } from '@/modules/memberships/services/implementation.membership-service';
-import type { MembershipWithProgram } from '@/modules/memberships/services/interface.membership-service';
 
 /**
- * Resolves a membership by membership_client_id.
- * If it doesn't exist, creates one using the provided userId.
+ * Resolves a membership by program_public_id and user_id.
+ * Creates the membership if it does not exist.
  */
 export function useMembershipByClientId(
-    membershipClientId: string | undefined,
-    programId: string | undefined,
+    programPublicId: string | undefined,
     userId: string | undefined
 ) {
     return useQuery({
-        queryKey: ['membership', 'clientId', membershipClientId],
-        queryFn: async (): Promise<MembershipWithProgram | null> => {
-            if (!membershipClientId || !programId || !userId) return null;
-
-            const existing = await membershipService.getByClientId(membershipClientId);
+        queryKey: ['membership', 'programUser', programPublicId, userId],
+        queryFn: async () => {
+            const existing = await membershipService.getByProgramPublicIdAndUserId(
+                programPublicId!,
+                userId!
+            );
             if (existing) return existing;
-
-            await membershipService.createWithClientId(programId, userId, membershipClientId);
-
-            return await membershipService.getByClientId(membershipClientId);
+            return membershipService.createByProgramPublicIdAndUserId(programPublicId!, userId!);
         },
-        enabled: !!membershipClientId && !!programId && !!userId,
+        enabled: !!programPublicId && !!userId,
     });
 }
