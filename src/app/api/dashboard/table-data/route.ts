@@ -1,7 +1,6 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-import { createAdminClient } from '@/infrastructure/supabase/admin';
 import { createClient } from '@/infrastructure/supabase/server';
 import { serverAuthService } from '@/shared/services/auth/implementation.server-auth-service';
 
@@ -65,26 +64,8 @@ export async function GET() {
 
         const businessId = staff.business_id;
         const { start, end } = getTodayRange();
-        const admin = createAdminClient();
 
-        const userIds = new Set<string>();
-        const userNames: Record<string, string> = {};
-
-        async function resolveUserName(userId: string): Promise<string> {
-            if (userNames[userId]) return userNames[userId];
-            try {
-                const { data } = await admin.auth.admin.getUserById(userId);
-                const name = data.user?.user_metadata?.name ?? data.user?.email ?? 'Cliente';
-                userNames[userId] = name;
-                return name;
-            } catch {
-                return 'Cliente';
-            }
-        }
-
-        async function resolveUserNames(ids: string[]) {
-            await Promise.all(ids.map((id) => resolveUserName(id)));
-        }
+        const customerLabel = 'Cliente';
 
         // Programas del negocio (para filtrar memberships si no tienen business_id directo)
         const { data: businessPrograms } = await supabase
@@ -104,9 +85,6 @@ export async function GET() {
                       .lt('created_at', end)
                       .order('created_at', { ascending: false })
                 : { data: [] };
-
-        const newCustomerIds = (newMemberships ?? []).map((m) => m.user_id);
-        newCustomerIds.forEach((id) => userIds.add(id));
 
         // 2. Obtener membership_ids del negocio
         const { data: membershipIds } =
@@ -130,22 +108,17 @@ export async function GET() {
                     'latest-activities': [],
                     'new-customers': (newMemberships ?? []).map((m) => ({
                         id: m.id,
-                        name: '',
+                        name: customerLabel,
                         date: formatDate(m.created_at),
                     })),
                     sales: [],
                     'rewards-claimed': [],
                 },
             };
-            await resolveUserNames(newCustomerIds);
-            for (const m of newMemberships ?? []) {
-                emptyResponse.data['new-customers'].find((r) => r.id === m.id)!.name =
-                    userNames[m.user_id] ?? 'Cliente';
-            }
             for (const m of newMemberships ?? []) {
                 emptyResponse.data['latest-activities'].push({
                     id: m.id,
-                    client: userNames[m.user_id] ?? 'Cliente',
+                    client: customerLabel,
                     type: 'Nuevo cliente',
                     registered_by: '—',
                     date: formatDate(m.created_at, true),
@@ -200,7 +173,6 @@ export async function GET() {
                 .in('id', membershipIdsFromActivities);
             (membershipsForActivities ?? []).forEach((m) => {
                 membershipById[m.id] = { user_id: m.user_id };
-                userIds.add(m.user_id);
             });
         }
 
@@ -227,8 +199,6 @@ export async function GET() {
             });
         }
 
-        await resolveUserNames(Array.from(userIds));
-
         const sales: DashboardTableRow[] = [];
         const rewards: DashboardTableRow[] = [];
         const latest: DashboardTableRow[] = [];
@@ -238,7 +208,7 @@ export async function GET() {
             const program = programById[a.program_id];
             if (!membership || !program) continue;
 
-            const clientName = userNames[membership.user_id] ?? 'Cliente';
+            const clientName = customerLabel;
             const registeredBy = staffNames[a.registered_by_staff_id] ?? '—';
             const date = formatDate(a.registered_at, true);
 
@@ -274,14 +244,14 @@ export async function GET() {
 
         const newCustomers: DashboardTableRow[] = (newMemberships ?? []).map((m) => ({
             id: m.id,
-            name: userNames[m.user_id] ?? 'Cliente',
+            name: customerLabel,
             date: formatDate(m.created_at),
         }));
 
         for (const m of newMemberships ?? []) {
             latest.push({
                 id: m.id,
-                client: userNames[m.user_id] ?? 'Cliente',
+                client: customerLabel,
                 type: 'Nuevo cliente',
                 registered_by: '—',
                 date: formatDate(m.created_at, true),

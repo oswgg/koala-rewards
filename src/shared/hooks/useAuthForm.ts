@@ -50,18 +50,6 @@ export function useAuthForm({
             if (type === 'signup') {
                 await authService.createUser(email.trim(), name.trim());
             } else {
-                // Login: validar que el usuario exista antes de enviar OTP
-                const res = await fetch('/api/auth/check-email', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email.trim() }),
-                });
-                const data = await res.json();
-                if (!data.exists) {
-                    throw new Error(
-                        'Este correo no está registrado. Regístrate primero.'
-                    );
-                }
                 await authService.sendOtp(email.trim());
             }
         },

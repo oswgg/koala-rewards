@@ -1,19 +1,20 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-import { createAdminClient } from '@/infrastructure/supabase/admin';
 import { createClient } from '@/infrastructure/supabase/server';
 import type { Business } from '@/shared/types/business';
-import { User } from '@/shared/types/user';
+import { serverAuthService } from '@/shared/services/auth/implementation.server-auth-service';
 
 export async function POST(request: Request) {
     try {
+        const cookieStore = await cookies();
+        const authUser = await serverAuthService.getSessionFromCookies(cookieStore);
+        if (!authUser?.id) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const body = await request.json();
-        const { name, slug, user } = body as {
-            name: string;
-            slug: string;
-            user: User;
-        };
+        const { name, slug } = body as { name: string; slug: string };
 
         if (!name?.trim() || !slug?.trim()) {
             return NextResponse.json(
@@ -22,9 +23,9 @@ export async function POST(request: Request) {
             );
         }
 
-        const supabaseAdmin = createAdminClient();
+        const supabase = createClient(Promise.resolve(cookieStore));
 
-        const { data: businessData, error: businessError } = await supabaseAdmin
+        const { data: businessData, error: businessError } = await supabase
             .from('businesses')
             .insert({ name: name.trim(), slug: slug.trim() })
             .select()
@@ -33,21 +34,6 @@ export async function POST(request: Request) {
         if (businessError) {
             return NextResponse.json(
                 { error: businessError.message },
-                { status: 500 }
-            );
-        }
-
-        const { error: staffError } = await supabaseAdmin.from('staff').insert({
-            business_id: businessData.id,
-            user_id: user.id,
-            type: 'admin',
-            name: user.name,
-            email: user.email,
-        });
-
-        if (staffError) {
-            return NextResponse.json(
-                { error: staffError.message },
                 { status: 500 }
             );
         }

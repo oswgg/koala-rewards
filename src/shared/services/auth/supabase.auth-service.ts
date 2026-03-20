@@ -1,7 +1,7 @@
 import { createClient } from '@/infrastructure/supabase/client';
 import { AuthService } from './interface.auth-service';
 import { User } from '@/shared/types/user';
-import { User as SupabaseUser } from '@supabase/auth-js';
+import { User as SupabaseUser, isAuthApiError } from '@supabase/auth-js';
 import { toUser } from './implementation.auth-service';
 
 export const supabaseAuthService: AuthService = {
@@ -22,10 +22,19 @@ export const supabaseAuthService: AuthService = {
 
     sendOtp: async (email: string) => {
         const supabase = createClient();
-        const { data, error } = await supabase.auth.signInWithOtp({
+        const { error } = await supabase.auth.signInWithOtp({
             email,
+            options: { shouldCreateUser: false },
         });
         if (error) {
+            if (
+                isAuthApiError(error) &&
+                (error.code === 'user_not_found' || error.code === 'signup_disabled')
+            ) {
+                throw new Error(
+                    'Este correo no está registrado. Regístrate primero.'
+                );
+            }
             throw error;
         }
     },

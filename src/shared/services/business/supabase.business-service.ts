@@ -5,7 +5,8 @@ export const supabaseBusinessService: BusinessService = {
         const res = await fetch('/api/businesses', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(input),
+            body: JSON.stringify({ name: input.name, slug: input.slug }),
+            credentials: 'include',
         });
 
         const data = await res.json();
