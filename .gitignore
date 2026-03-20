@@ -43,3 +43,8 @@ pnpm-debug.log*
 next-env.d.ts
 
 .env
+
+# open-next
+.open-next/
+.open-next.config.ts
+wrangler.json
