@@ -7,7 +7,7 @@ import {
     MemberShipCardDetailView,
     getCardTheme,
 } from '@/shared/components/wallets/mermbership-card-detail';
-import { buildCustomerQRValue } from '@/shared/lib/qr-data';
+import { buildCustomerScanUrl, getAppBaseUrlForQr } from '@/shared/lib/qr-data';
 import { Button } from '@/shared/components/ui/button';
 import type { MembershipWithProgram } from '../services/interface.membership-service';
 
@@ -32,7 +32,11 @@ export function ShowQRToStaffModal({ onOpenChange, membership }: ShowQRToStaffMo
                 balance={membership.balance}
                 cashbackPercentage={membership.program.cashback_percentage ?? 0}
                 pointsPercentage={membership.program.points_percentage ?? 0}
-                qrUrl={buildCustomerQRValue(membership.program.public_id, membership.user_id)}
+                qrUrl={buildCustomerScanUrl(
+                    getAppBaseUrlForQr(),
+                    membership.program.public_id,
+                    membership.user_id
+                )}
                 theme={getCardTheme(membership.program.card_theme)}
                 variant="customer"
                 size="lg"

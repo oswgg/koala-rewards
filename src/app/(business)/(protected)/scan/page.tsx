@@ -1,20 +1,38 @@
 'use client';
 
-import { useEffect, useRef, useCallback, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useEffect, useRef, useCallback, useState, useMemo } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Html5Qrcode } from 'html5-qrcode';
 import { AuthForm } from '@/shared/components/auth-form';
 import { useAuthSession } from '@/shared/hooks/useAuthSession';
 import { ScanActivityForm } from '@/modules/activities/components/scan-activity-form';
 import { parseCustomerQR, type CustomerQRData } from '@/shared/lib/qr-data';
 import { businessRoutes } from '@/shared/lib/routes';
+import { cn } from '@/shared/lib/utils';
 
 const SCANNER_ELEMENT_ID = 'scan-membership-qr';
 
-export default function ScanPage() {
+function ScanPageContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { isAuthenticated, isLoading: authLoading } = useAuthSession();
-    const [scannedData, setScannedData] = useState<CustomerQRData | null>(null);
+
+    const queryData = useMemo(() => {
+        const p = searchParams.get('p');
+        const u = searchParams.get('u');
+        if (p && u) return { program_public_id: p, user_id: u } satisfies CustomerQRData;
+        return null;
+    }, [searchParams]);
+
+    const [persistedScan, setPersistedScan] = useState<CustomerQRData | null>(null);
+    const scannedData = persistedScan ?? queryData;
+
+    useEffect(() => {
+        if (queryData) {
+            setPersistedScan(queryData);
+            router.replace(businessRoutes.scan, { scroll: false });
+        }
+    }, [queryData, router]);
 
     const scannerRef = useRef<Html5Qrcode | null>(null);
     const isScanningRef = useRef(false);
@@ -49,14 +67,22 @@ export default function ScanPage() {
 
                 await html5QrCode.start(
                     { facingMode: 'environment' },
-                    { fps: 15, qrbox: { width: 250, height: 250 }, disableFlip: true },
+                    {
+                        fps: 15,
+                        qrbox: (viewfinderWidth, viewfinderHeight) => {
+                            const edge = Math.min(viewfinderWidth, viewfinderHeight);
+                            const size = Math.max(180, Math.min(Math.floor(edge * 0.72), 340));
+                            return { width: size, height: size };
+                        },
+                        disableFlip: true,
+                    },
                     (decodedText) => {
                         if (!mounted || processedRef.current) return;
                         const data = parseCustomerQR(decodedText);
                         if (data) {
                             processedRef.current = true;
                             stopScanner();
-                            setScannedData(data);
+                            setPersistedScan(data);
                         }
                     },
                     () => {}
@@ -75,7 +101,7 @@ export default function ScanPage() {
     }, [isAuthenticated, authLoading, scannedData, stopScanner]);
 
     const handleScanAnother = useCallback(() => {
-        setScannedData(null);
+        setPersistedScan(null);
         router.replace(businessRoutes.scan);
     }, [router]);
 
@@ -129,12 +155,32 @@ export default function ScanPage() {
                     Apunta la cámara al código QR de la tarjeta de fidelidad del cliente
                 </p>
             </header>
-            <div className="flex-1 overflow-hidden p-4">
-                <div
-                    id={SCANNER_ELEMENT_ID}
-                    className="h-full min-h-[300px] w-full overflow-hidden rounded-xl bg-black/5 [&>div]:rounded-xl dark:bg-black/20"
-                />
+            <div className="flex flex-1 flex-col overflow-auto px-4 pb-8 pt-4">
+                <div className="mx-auto w-full max-w-sm sm:max-w-md md:max-w-lg">
+                    <div
+                        id={SCANNER_ELEMENT_ID}
+                        className={cn(
+                            'relative aspect-square w-full overflow-hidden rounded-xl bg-black',
+                            /* html5-qrcode fija ancho al vídeo; forzamos llenar el cuadrado para evitar bandas claras */
+                            '[&_video]:block [&_video]:h-full! [&_video]:w-full! [&_video]:object-cover'
+                        )}
+                    />
+                </div>
             </div>
         </div>
+    );
+}
+
+export default function ScanPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="flex min-h-svh flex-col items-center justify-center bg-background">
+                    <p className="text-muted-foreground">Cargando...</p>
+                </div>
+            }
+        >
+            <ScanPageContent />
+        </Suspense>
     );
 }

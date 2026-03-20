@@ -1,10 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
-import { Heart, LayoutDashboard, Menu, ScanLine } from 'lucide-react';
+import { Heart, LayoutDashboard, Menu, QrCode, ScanLine } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
-import { Input } from '@/ui/input';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/ui/button';
 import {
@@ -76,6 +74,27 @@ function SidebarContent() {
     );
 }
 
+function MobileScanFab() {
+    const pathname = usePathname();
+    if (pathname.startsWith('/scan')) return null;
+
+    return (
+        <Link
+            href={businessRoutes.scan}
+            className={cn(
+                'fixed z-50 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg',
+                'bottom-[max(1.25rem,env(safe-area-inset-bottom,0px))] right-[max(1rem,env(safe-area-inset-right,0px))]',
+                'transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-xl',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                'md:hidden'
+            )}
+            aria-label="Escanear tarjeta"
+        >
+            <QrCode className="size-7" strokeWidth={2} aria-hidden />
+        </Link>
+    );
+}
+
 export function AppSidebar() {
     return (
         <>
@@ -102,6 +121,8 @@ export function AppSidebar() {
             <aside className="hidden w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar md:flex">
                 <SidebarContent />
             </aside>
+
+            <MobileScanFab />
         </>
     );
 }

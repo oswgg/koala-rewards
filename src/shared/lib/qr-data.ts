@@ -82,30 +82,70 @@ export function parseProgramQR(text: string): JoinProgramQRData | null {
     }
 }
 
-/**
- * Builds the JSON string for a customer QR code (scanned by staff).
- */
-export function buildCustomerQRValue(programPublicId: string, userId: string): string {
-    const data: CustomerQRData = {
-        program_public_id: programPublicId,
-        user_id: userId,
-    };
-    return JSON.stringify(data);
+/** Base URL for QR payloads (client components: prefer `window.location.origin`). */
+export function getAppBaseUrlForQr(): string {
+    if (typeof window !== 'undefined') return window.location.origin;
+    return process.env.NEXT_PUBLIC_APP_URL ?? '';
 }
 
 /**
- * Parses a customer QR code value (JSON payload).
- * Returns null if the text is not valid customer QR data.
+ * Full URL for the staff scan flow. Native phone scanners open this in the browser.
+ * Query: `p` = program public id, `u` = customer user id.
+ */
+export function buildCustomerScanUrl(
+    baseUrl: string,
+    programPublicId: string,
+    userId: string
+): string {
+    const base = baseUrl.replace(/\/$/, '');
+    const params = new URLSearchParams({ p: programPublicId, u: userId });
+    return `${base}/scan?${params.toString()}`;
+}
+
+/**
+ * Parses a customer QR: full `/scan?p=&u=` URL, legacy JSON, or query-only string.
  */
 export function parseCustomerQR(text: string): CustomerQRData | null {
+    const trimmed = text.trim();
+    if (!trimmed) return null;
+
     try {
-        const data = JSON.parse(text);
-        console.log('data', data);
-        if (typeof data.program_public_id === 'string' && typeof data.user_id === 'string') {
+        if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+            const url = new URL(trimmed);
+            const p = url.searchParams.get('p');
+            const u = url.searchParams.get('u');
+            if (p && u) return { program_public_id: p, user_id: u };
+        }
+    } catch {
+        /* ignore */
+    }
+
+    try {
+        if (trimmed.startsWith('?')) {
+            const url = new URL(trimmed, 'http://local');
+            const p = url.searchParams.get('p');
+            const u = url.searchParams.get('u');
+            if (p && u) return { program_public_id: p, user_id: u };
+        }
+    } catch {
+        /* ignore */
+    }
+
+    try {
+        const data = JSON.parse(trimmed) as unknown;
+        if (
+            data &&
+            typeof data === 'object' &&
+            'program_public_id' in data &&
+            'user_id' in data &&
+            typeof (data as CustomerQRData).program_public_id === 'string' &&
+            typeof (data as CustomerQRData).user_id === 'string'
+        ) {
             return data as CustomerQRData;
         }
-        return null;
     } catch {
-        return null;
+        /* ignore */
     }
+
+    return null;
 }

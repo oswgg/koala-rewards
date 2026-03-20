@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import type { MembershipWithProgram } from '@/modules/memberships/services/interface.membership-service';
 import { CARD_HEIGHT, MembershipCardPreview, PEEK } from './membership-card-preview';
 import { getCardTheme, MemberShipCardDetailView } from './mermbership-card-detail';
-import { buildCustomerQRValue } from '@/shared/lib/qr-data';
+import { buildCustomerScanUrl, getAppBaseUrlForQr } from '@/shared/lib/qr-data';
 
 const spring = { type: 'spring' as const, stiffness: 400, damping: 30 };
 
@@ -159,7 +159,8 @@ export function CardWallet({
                                 isBalanceJustChanged={
                                     balanceChangedId === memberships[expandedIndex]?.id
                                 }
-                                qrUrl={buildCustomerQRValue(
+                                qrUrl={buildCustomerScanUrl(
+                                    getAppBaseUrlForQr(),
                                     memberships[expandedIndex].program.public_id,
                                     memberships[expandedIndex].user_id
                                 )}
