@@ -20,9 +20,25 @@ export const supabaseProgramsService: ProgramsService = {
 
     getAll: async () => {
         const supabase = createClient();
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
+        if (!user?.id) return [];
+
+        const { data: staff } = await supabase
+            .from('staff')
+            .select('business_id')
+            .eq('user_id', user.id)
+            .eq('type', 'admin')
+            .limit(1)
+            .maybeSingle();
+
+        if (!staff?.business_id) return [];
+
         const { data, error } = await supabase
             .from('loyalty_programs')
             .select(PROGRAM_WITH_BUSINESS)
+            .eq('business_id', staff.business_id)
             .order('created_at', { ascending: false });
         if (error) throw error;
         return (data ?? []) as StoredLoyaltyProgram[];
