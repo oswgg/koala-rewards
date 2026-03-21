@@ -11,6 +11,12 @@ import { useMembershipByClientId } from '../hooks/useMembershipByClientId';
 import { useRegisterActivity } from '../hooks/useRegisterActivity';
 import { useRedeemReward } from '../hooks/useRedeemReward';
 import { useStaff } from '../hooks/useStaff';
+import { useEarnLimitToday } from '../hooks/useEarnLimitToday';
+import {
+    EARN_PER_DAY_LIMIT_MESSAGE,
+    parseRegisterEarnError,
+    RegisterEarnErrorType,
+} from '@/modules/activities/lib/register-activity-errors';
 import { isRewardReady } from '@/shared/lib/reward';
 import { businessRoutes } from '@/shared/lib/routes';
 
@@ -32,6 +38,12 @@ export function ScanActivityForm({
         isLoading,
         isError,
     } = useMembershipByClientId(programPublicId, userId);
+
+    const limitOnePerDay = membership?.program.limit_one_per_day ?? false;
+    const { data: hasEarnToday, isPending: earnLimitPending } = useEarnLimitToday(
+        membership?.id,
+        limitOnePerDay
+    );
 
     const { data: staff, isLoading: staffLoading } = useStaff();
     const registerMutation = useRegisterActivity();
@@ -106,6 +118,14 @@ export function ScanActivityForm({
         );
     }
 
+    if (limitOnePerDay && earnLimitPending) {
+        return (
+            <div className="flex min-h-[200px] items-center justify-center">
+                <p className="text-muted-foreground">Cargando...</p>
+            </div>
+        );
+    }
+
     if (!staff) {
         return (
             <div className="rounded-lg border border-amber-500/50 bg-amber-500/10 p-4 text-center text-amber-700 dark:text-amber-400">
@@ -115,6 +135,11 @@ export function ScanActivityForm({
     }
 
     const program = membership.program;
+    const earnBlockedForToday = limitOnePerDay && hasEarnToday === true;
+
+    const earnError = registerMutation.isError
+        ? parseRegisterEarnError(registerMutation.error)
+        : null;
     const earnSuccess = registerMutation.isSuccess && !registerMutation.isPending;
     const redeemSuccess = redeemMutation.isSuccess && !redeemMutation.isPending;
     const earnResult = registerMutation.data;
@@ -171,6 +196,13 @@ export function ScanActivityForm({
                             <Gift className="mr-2 size-5" />
                             {redeemMutation.isPending ? 'Otorgando...' : 'Otorgar recompensa'}
                         </Button>
+                    </div>
+                ) : earnBlockedForToday ? (
+                    <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-4 text-center text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/15 dark:text-amber-100">
+                        <p className="font-medium">Límite diario alcanzado</p>
+                        <p className="mt-2 text-amber-800/90 dark:text-amber-100/90">
+                            {EARN_PER_DAY_LIMIT_MESSAGE}
+                        </p>
                     </div>
                 ) : (
                     <>
@@ -240,6 +272,12 @@ export function ScanActivityForm({
                     </>
                 )}
             </div>
+
+            {earnError?.type === RegisterEarnErrorType.DefaultError && (
+                <div className="rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3 text-center text-sm text-destructive">
+                    {earnError.message}
+                </div>
+            )}
 
             {earnSuccess && earnResult && (
                 <div className="space-y-1 rounded-lg border border-emerald-500/50 bg-emerald-500/10 px-4 py-3 text-center text-sm text-emerald-700 dark:text-emerald-400">

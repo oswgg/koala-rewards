@@ -4,6 +4,12 @@ import type { StoredLoyaltyProgram } from '@/shared/types/loyalty-program';
 import { calculateEarnedAmount, calculateNewBalance } from '../domain/balance';
 import { RegisterEarnActivityInput, RegisterRedeemActivityInput } from '@/shared/types/activity';
 import { isRewardReady } from '@/shared/lib/reward';
+import { membershipService } from '@/modules/memberships/services/implementation.membership-service';
+import {
+    EARN_PER_DAY_LIMIT_MESSAGE,
+    RegisterEarnActivityError,
+    RegisterEarnErrorType,
+} from '@/modules/activities/lib/register-activity-errors';
 
 export const supabaseCardActivityService: CardActivityService = {
     registerEarnActivity: async (input: RegisterEarnActivityInput, staffId: number) => {
@@ -27,6 +33,17 @@ export const supabaseCardActivityService: CardActivityService = {
         if (programError || !program) throw programError ?? new Error('Program not found');
 
         const programTyped = program as StoredLoyaltyProgram;
+
+        if (programTyped.limit_one_per_day) {
+            const alreadyEarned = await membershipService.hasEarnActivityToday(input.membershipId);
+            if (alreadyEarned) {
+                throw new RegisterEarnActivityError(
+                    RegisterEarnErrorType.EARN_PER_DAY_LIMIT_ERROR,
+                    EARN_PER_DAY_LIMIT_MESSAGE
+                );
+            }
+        }
+
         const currentBalance = Number(membership.balance);
         const earnedAmount = calculateEarnedAmount(programTyped, input);
         const newBalance = calculateNewBalance(currentBalance, programTyped, input);
@@ -52,10 +69,7 @@ export const supabaseCardActivityService: CardActivityService = {
         return { earnedAmount, newBalance };
     },
 
-    registerRedeemActivity: async (
-        input: RegisterRedeemActivityInput,
-        staffId: number
-    ) => {
+    registerRedeemActivity: async (input: RegisterRedeemActivityInput, staffId: number) => {
         const supabase = createClient();
 
         const { data: membership, error: membershipError } = await supabase
