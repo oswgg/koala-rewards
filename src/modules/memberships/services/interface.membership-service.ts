@@ -22,4 +22,5 @@ export interface MembershipService {
         programPublicId: string,
         userId: string
     ): Promise<MembershipWithProgram | null>;
+    hasEarnActivityToday(membershipId: string): Promise<boolean>;
 }

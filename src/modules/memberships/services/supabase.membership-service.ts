@@ -2,6 +2,7 @@ import { createClient } from '@/infrastructure/supabase/client';
 import type { MembershipService, MembershipWithProgram } from './interface.membership-service';
 import type { ProgramMembership } from '@/shared/types/membership';
 import type { StoredLoyaltyProgram } from '@/shared/types/loyalty-program';
+import { utcDayBoundsIso } from '@/modules/activities/lib/earn-limit';
 
 const MEMBERSHIP_WITH_PROGRAM_AND_BUSINESS = `
     *,
@@ -162,5 +163,21 @@ export const supabaseMembershipService: MembershipService = {
         }
 
         return created ? toMembershipWithProgram(created) : null;
+    },
+
+    hasEarnActivityToday: async (membershipId: string): Promise<boolean> => {
+        const supabase = createClient();
+        const { startIso, endIso } = utcDayBoundsIso();
+        const { data, error } = await supabase
+            .from('card_activity')
+            .select('id')
+            .eq('membership_id', membershipId)
+            .eq('type', 'earn')
+            .gte('registered_at', startIso)
+            .lt('registered_at', endIso)
+            .limit(1);
+
+        if (error) throw error;
+        return Array.isArray(data) && data.length > 0;
     },
 };
