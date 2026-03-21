@@ -1,7 +1,3 @@
-import { createClient } from '@/infrastructure/supabase/client';
-
-export type SupabaseBrowserClient = ReturnType<typeof createClient>;
-
 export const earnTodayQueryKey = (membershipId: string) => ['earn-today', membershipId] as const;
 
 /** Rango [start, end) del día civil en UTC (coincide con el chequeo en servidor y reportes). */
