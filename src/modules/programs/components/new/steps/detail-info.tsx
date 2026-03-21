@@ -102,36 +102,70 @@ export function DetailInfo({ prevStep, nextStep }: DetailInfoProps) {
                         )}
 
                         {programType === 'points' && (
-                            <form.Field name="points_percentage">
-                                {(field) => (
-                                    <div className="space-y-2">
-                                        <FieldLabel htmlFor="points_percentage">
-                                            % de puntos por $ gastado
-                                        </FieldLabel>
-                                        <Input
-                                            placeholder="Ej: 5"
-                                            id="points_percentage"
-                                            type="number"
-                                            min={1}
-                                            value={
-                                                field.state.value == null || field.state.value === 0
-                                                    ? ''
-                                                    : field.state.value
-                                            }
-                                            onChange={(e) => {
-                                                const v = e.target.value;
-                                                field.handleChange(v === '' ? 0 : Number(v));
-                                            }}
-                                            className="h-10"
-                                        />
-                                        {field.state.meta.errors?.length ? (
-                                            <p className="text-sm text-destructive">
-                                                {field.state.meta.errors?.[0]}
-                                            </p>
-                                        ) : null}
-                                    </div>
-                                )}
-                            </form.Field>
+                            <>
+                                <form.Field name="points_percentage">
+                                    {(field) => (
+                                        <div className="space-y-2">
+                                            <FieldLabel htmlFor="points_percentage">
+                                                % de puntos por $ gastado
+                                            </FieldLabel>
+                                            <Input
+                                                placeholder="Ej: 5"
+                                                id="points_percentage"
+                                                type="number"
+                                                min={1}
+                                                value={
+                                                    field.state.value == null ||
+                                                    field.state.value === 0
+                                                        ? ''
+                                                        : field.state.value
+                                                }
+                                                onChange={(e) => {
+                                                    const v = e.target.value;
+                                                    field.handleChange(v === '' ? 0 : Number(v));
+                                                }}
+                                                className="h-10"
+                                            />
+                                            {field.state.meta.errors?.length ? (
+                                                <p className="text-sm text-destructive">
+                                                    {field.state.meta.errors?.[0]}
+                                                </p>
+                                            ) : null}
+                                        </div>
+                                    )}
+                                </form.Field>
+                                <form.Field name="reward_cost">
+                                    {(field) => (
+                                        <div className="space-y-2">
+                                            <FieldLabel htmlFor="reward_cost">
+                                                Puntos necesarios para canjear
+                                            </FieldLabel>
+                                            <Input
+                                                placeholder="Ej: 100"
+                                                id="reward_cost"
+                                                type="number"
+                                                min={1}
+                                                value={
+                                                    field.state.value == null ||
+                                                    field.state.value === 0
+                                                        ? ''
+                                                        : field.state.value
+                                                }
+                                                onChange={(e) => {
+                                                    const v = e.target.value;
+                                                    field.handleChange(v === '' ? 0 : Number(v));
+                                                }}
+                                                className="h-10"
+                                            />
+                                            {field.state.meta.errors?.length ? (
+                                                <p className="text-sm text-destructive">
+                                                    {field.state.meta.errors?.[0]}
+                                                </p>
+                                            ) : null}
+                                        </div>
+                                    )}
+                                </form.Field>
+                            </>
                         )}
 
                         {programType === 'cashback' && (
