@@ -64,6 +64,8 @@ export interface RegisterPurchaseEarnInput extends BaseRegisterActivityInput {
 export interface RegisterRedeemInput extends BaseRegisterActivityInput {
     programType: null;
     type: 'redeem';
+    /** Solo programas cashback: canjea todo el saldo acumulado y lo deja en 0. */
+    cashbackApplyAll?: boolean;
 }
 
 export type RegisterEarnActivityInput = RegisterStampEarnInput | RegisterPurchaseEarnInput;
@@ -76,4 +78,11 @@ export interface RegisterEarnActivityResult {
     earnedAmount: number;
     /** Nuevo balance de la tarjeta tras la actividad */
     newBalance: number;
+}
+
+/** Resultado de registrar un canje (recompensa o cashback acumulado). */
+export interface RegisterRedeemActivityResult {
+    newBalance: number;
+    /** Monto canjeado (cashback total o costo en sellos/puntos). */
+    redeemedAmount?: number;
 }

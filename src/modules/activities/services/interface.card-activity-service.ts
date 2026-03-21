@@ -2,12 +2,8 @@ import {
     RegisterEarnActivityInput,
     RegisterEarnActivityResult,
     RegisterRedeemActivityInput,
+    RegisterRedeemActivityResult,
 } from '@/shared/types/activity';
-
-export interface RegisterRedeemActivityResult {
-    /** Nuevo balance tras canjear la recompensa */
-    newBalance: number;
-}
 
 export interface CardActivityService {
     registerEarnActivity(
