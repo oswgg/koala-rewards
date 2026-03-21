@@ -168,15 +168,16 @@ export const supabaseMembershipService: MembershipService = {
     hasEarnActivityToday: async (membershipId: string): Promise<boolean> => {
         const supabase = createClient();
         const { startIso, endIso } = utcDayBoundsIso();
-        const { count, error } = await supabase
+        const { data, error } = await supabase
             .from('card_activity')
-            .select('*', { count: 'exact', head: true })
+            .select('id')
             .eq('membership_id', membershipId)
             .eq('type', 'earn')
             .gte('registered_at', startIso)
-            .lt('registered_at', endIso);
+            .lt('registered_at', endIso)
+            .limit(1);
 
         if (error) throw error;
-        return (count ?? 0) > 0;
+        return Array.isArray(data) && data.length > 0;
     },
 };
