@@ -91,6 +91,39 @@ export const supabaseCardActivityService: CardActivityService = {
 
         const programTyped = program as StoredLoyaltyProgram;
         const currentBalance = Number(membership.balance);
+
+        if (programTyped.type === 'cashback') {
+            if (!input.cashbackApplyAll) {
+                throw new Error('Programa cashback: usa aplicar cashback para registrar el canje');
+            }
+            if (currentBalance <= 0) {
+                throw new Error('No hay cashback acumulado para aplicar');
+            }
+
+            const redeemedAmount = currentBalance;
+            const newBalance = 0;
+
+            const { error: insertError } = await supabase.from('card_activity').insert({
+                membership_id: input.membershipId,
+                program_id: input.programId,
+                type: 'redeem',
+                quantity: redeemedAmount,
+                purchase_amount: null,
+                registered_by_staff_id: staffId,
+            });
+
+            if (insertError) throw insertError;
+
+            const { error: updateError } = await supabase
+                .from('program_memberships')
+                .update({ balance: newBalance })
+                .eq('id', input.membershipId);
+
+            if (updateError) throw updateError;
+
+            return { newBalance, redeemedAmount };
+        }
+
         const rewardCost = programTyped.reward_cost ?? 0;
 
         if (
@@ -123,6 +156,6 @@ export const supabaseCardActivityService: CardActivityService = {
 
         if (updateError) throw updateError;
 
-        return { newBalance };
+        return { newBalance, redeemedAmount: rewardCost };
     },
 };
