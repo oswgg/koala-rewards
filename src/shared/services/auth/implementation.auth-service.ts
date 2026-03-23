@@ -7,9 +7,16 @@ export const authService: AuthService = supabaseAuthService;
 
 export function toUser(supabaseUser: SupabaseUser | null): User | null {
     if (!supabaseUser?.email) return null;
+    const meta = supabaseUser.user_metadata as {
+        name?: string;
+        phone_number?: string;
+    };
     return {
         id: supabaseUser.id,
         email: supabaseUser.email,
-        name: supabaseUser.user_metadata.name,
+        name: meta.name ?? '',
+        ...(meta.phone_number != null && meta.phone_number !== ''
+            ? { phoneNumber: meta.phone_number }
+            : {}),
     };
 }

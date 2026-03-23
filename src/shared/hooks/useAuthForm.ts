@@ -22,9 +22,11 @@ export interface UseAuthFormReturn {
     type: AuthFormType;
     email: string;
     name: string;
+    phone: string;
     otp: string;
     handleEmailChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handlePhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleOtpValueChange: (value: string) => void;
     handleSubmitEmail: (e: React.FormEvent) => Promise<void>;
     handleVerifyOtp: (e: React.FormEvent) => Promise<void>;
@@ -42,13 +44,14 @@ export function useAuthForm({
     const router = useRouter();
     const [email, setEmail] = useState<string>('');
     const [name, setName] = useState<string>('');
+    const [phone, setPhone] = useState<string>('');
     const [step, setStep] = useState<AuthFormStep>('email');
     const [otp, setOtp] = useState<string>('');
 
     const sendOtpMutation = useMutation({
         mutationFn: async () => {
             if (type === 'signup') {
-                await authService.createUser(email.trim(), name.trim());
+                await authService.createUser(email.trim(), name.trim(), phone.trim());
             } else {
                 await authService.sendOtp(email.trim());
             }
@@ -78,6 +81,10 @@ export function useAuthForm({
         setName(e.target.value);
     };
 
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPhone(e.target.value);
+    };
+
     const handleOtpValueChange = (value: string) => {
         setOtp(value);
     };
@@ -85,7 +92,7 @@ export function useAuthForm({
     const handleSubmitEmail = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!email.trim()) return;
-        if (type === 'signup' && !name.trim()) return;
+        if (type === 'signup' && (!name.trim() || !phone.trim())) return;
         await sendOtpMutation.mutateAsync();
     };
 
@@ -107,7 +114,7 @@ export function useAuthForm({
 
     const handleResendOtp = async () => {
         if (!email.trim()) return;
-        if (type === 'signup' && !name.trim()) return;
+        if (type === 'signup' && (!name.trim() || !phone.trim())) return;
         await sendOtpMutation.mutateAsync();
     };
 
@@ -116,9 +123,11 @@ export function useAuthForm({
         type,
         email,
         name,
+        phone,
         otp,
         handleEmailChange,
         handleNameChange,
+        handlePhoneChange,
         handleOtpValueChange,
         handleSubmitEmail,
         handleVerifyOtp,

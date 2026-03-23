@@ -89,7 +89,9 @@ function AuthFormContent({
         sendOtpMutation,
         verifyOtpMutation,
         name,
+        phone,
         handleNameChange,
+        handlePhoneChange,
     } = useAuthForm({ type, redirectTo, onSuccess });
 
     const isPending = sendOtpMutation.isPending || verifyOtpMutation.isPending;
@@ -167,6 +169,17 @@ function AuthFormContent({
                                             required
                                             disabled={isPending}
                                         />
+                                        <FieldLabel htmlFor="phone">Phone</FieldLabel>
+                                        <Input
+                                            id="phone"
+                                            type="tel"
+                                            placeholder="+1 555 123 4567"
+                                            autoComplete="tel"
+                                            value={phone}
+                                            onChange={handlePhoneChange}
+                                            required
+                                            disabled={isPending}
+                                        />
                                     </>
                                 )}
                                 <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -187,7 +200,8 @@ function AuthFormContent({
                                     disabled={
                                         isPending ||
                                         !email.trim() ||
-                                        (authType === 'signup' && !name.trim())
+                                        (authType === 'signup' &&
+                                            (!name.trim() || !phone.trim()))
                                     }
                                 >
                                     {emailStepButtonLoadingLabel}

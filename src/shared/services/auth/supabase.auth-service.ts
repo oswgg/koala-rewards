@@ -5,13 +5,14 @@ import { User as SupabaseUser, isAuthApiError } from '@supabase/auth-js';
 import { toUser } from './implementation.auth-service';
 
 export const supabaseAuthService: AuthService = {
-    createUser: async (email: string, name: string) => {
+    createUser: async (email: string, name: string, phoneNumber: string) => {
         const supabase = createClient();
-        const { data, error } = await supabase.auth.signInWithOtp({
+        const { error } = await supabase.auth.signInWithOtp({
             email,
             options: {
                 data: {
                     name,
+                    phone_number: phoneNumber,
                 },
             },
         });
