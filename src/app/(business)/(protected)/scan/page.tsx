@@ -9,18 +9,23 @@ import { ScanActivityForm } from '@/modules/activities/components/scan-activity-
 import { parseCustomerQR, type CustomerQRData } from '@/shared/lib/qr-data';
 import { businessRoutes } from '@/shared/lib/routes';
 import { cn } from '@/shared/lib/utils';
+import { NewCustomerSection } from '@/modules/business/scan/components/new-customer-section/new-customer-section';
+import { CustomerActivitySection } from '@/modules/business/scan/components/customer-activity-section';
+import { SelectingActionSection } from '@/modules/business/scan/components/selecting-action-section';
 
 const SCANNER_ELEMENT_ID = 'scan-membership-qr';
+type Action = 'selecting' | 'new-customer' | 'customer-activity';
 
 function ScanPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { isAuthenticated, isLoading: authLoading } = useAuthSession();
+    const [action, setAction] = useState<Action>('selecting');
 
     const queryData = useMemo(() => {
         const p = searchParams.get('p');
         const u = searchParams.get('u');
-        if (p && u) return { program_public_id: p, user_id: u } satisfies CustomerQRData;
+        if (p && u) return { program_public_id: p, profile_id: u } satisfies CustomerQRData;
         return null;
     }, [searchParams]);
 
@@ -123,6 +128,20 @@ function ScanPageContent() {
         );
     }
 
+    if (action === 'selecting') {
+        return <SelectingActionSection onSelectAction={setAction} />;
+    }
+
+    if (action === 'new-customer') {
+        return (
+            <NewCustomerSection onRegisterVisit={() => setAction('customer-activity')} />
+        );
+    }
+
+    if (action === 'customer-activity') {
+        return <CustomerActivitySection />;
+    }
+
     if (scannedData) {
         return (
             <div className="flex min-h-svh flex-col bg-background">
@@ -136,7 +155,7 @@ function ScanPageContent() {
                     <div className="mx-auto max-w-md">
                         <ScanActivityForm
                             programPublicId={scannedData.program_public_id}
-                            userId={scannedData.user_id}
+                            profileId={scannedData.profile_id}
                             onScanAnother={handleScanAnother}
                         />
                     </div>

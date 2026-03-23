@@ -16,7 +16,8 @@ export interface JoinProgramQRData {
 
 export interface CustomerQRData {
     program_public_id: string;
-    user_id: string;
+    /** `profiles.id` (query param `u` in scan URLs). */
+    profile_id: string;
 }
 
 /**
@@ -90,15 +91,15 @@ export function getAppBaseUrlForQr(): string {
 
 /**
  * Full URL for the staff scan flow. Native phone scanners open this in the browser.
- * Query: `p` = program public id, `u` = customer user id.
+ * Query: `p` = program public id, `u` = customer profile id (`profiles.id`).
  */
 export function buildCustomerScanUrl(
     baseUrl: string,
     programPublicId: string,
-    userId: string
+    profileId: string
 ): string {
     const base = baseUrl.replace(/\/$/, '');
-    const params = new URLSearchParams({ p: programPublicId, u: userId });
+    const params = new URLSearchParams({ p: programPublicId, u: profileId });
     return `${base}/scan?${params.toString()}`;
 }
 
@@ -114,7 +115,7 @@ export function parseCustomerQR(text: string): CustomerQRData | null {
             const url = new URL(trimmed);
             const p = url.searchParams.get('p');
             const u = url.searchParams.get('u');
-            if (p && u) return { program_public_id: p, user_id: u };
+            if (p && u) return { program_public_id: p, profile_id: u };
         }
     } catch {
         /* ignore */
@@ -125,7 +126,7 @@ export function parseCustomerQR(text: string): CustomerQRData | null {
             const url = new URL(trimmed, 'http://local');
             const p = url.searchParams.get('p');
             const u = url.searchParams.get('u');
-            if (p && u) return { program_public_id: p, user_id: u };
+            if (p && u) return { program_public_id: p, profile_id: u };
         }
     } catch {
         /* ignore */
@@ -137,11 +138,13 @@ export function parseCustomerQR(text: string): CustomerQRData | null {
             data &&
             typeof data === 'object' &&
             'program_public_id' in data &&
-            'user_id' in data &&
-            typeof (data as CustomerQRData).program_public_id === 'string' &&
-            typeof (data as CustomerQRData).user_id === 'string'
+            typeof (data as CustomerQRData).program_public_id === 'string'
         ) {
-            return data as CustomerQRData;
+            const legacy = data as { program_public_id: string; user_id?: string; profile_id?: string };
+            const profileId = legacy.profile_id ?? legacy.user_id;
+            if (typeof profileId === 'string') {
+                return { program_public_id: legacy.program_public_id, profile_id: profileId };
+            }
         }
     } catch {
         /* ignore */

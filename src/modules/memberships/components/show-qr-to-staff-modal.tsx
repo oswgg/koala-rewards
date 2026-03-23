@@ -35,7 +35,7 @@ export function ShowQRToStaffModal({ onOpenChange, membership }: ShowQRToStaffMo
                 qrUrl={buildCustomerScanUrl(
                     getAppBaseUrlForQr(),
                     membership.program.public_id,
-                    membership.user_id
+                    membership.profile_id
                 )}
                 theme={getCardTheme(membership.program.card_theme)}
                 variant="customer"

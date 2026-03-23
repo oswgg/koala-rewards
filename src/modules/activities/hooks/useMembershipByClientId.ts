@@ -4,23 +4,26 @@ import { useQuery } from '@tanstack/react-query';
 import { membershipService } from '@/modules/memberships/services/implementation.membership-service';
 
 /**
- * Resolves a membership by program_public_id and user_id.
- * Creates the membership if it does not exist.
+ * Resolves a membership by program_public_id and customer profile id (`profiles.id`).
+ * Creates the membership if it does not exist (staff scan flow).
  */
 export function useMembershipByClientId(
     programPublicId: string | undefined,
-    userId: string | undefined
+    profileId: string | undefined
 ) {
     return useQuery({
-        queryKey: ['membership', 'programUser', programPublicId, userId],
+        queryKey: ['membership', 'programProfile', programPublicId, profileId],
         queryFn: async () => {
-            const existing = await membershipService.getByProgramPublicIdAndUserId(
+            const existing = await membershipService.getByProgramPublicIdAndProfileId(
                 programPublicId!,
-                userId!
+                profileId!
             );
             if (existing) return existing;
-            return membershipService.createByProgramPublicIdAndUserId(programPublicId!, userId!);
+            return membershipService.createByProgramPublicIdAndProfileId(
+                programPublicId!,
+                profileId!
+            );
         },
-        enabled: !!programPublicId && !!userId,
+        enabled: !!programPublicId && !!profileId,
     });
 }

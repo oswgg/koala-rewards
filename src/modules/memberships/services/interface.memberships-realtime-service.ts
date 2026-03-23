@@ -23,12 +23,12 @@ export interface MembershipsRealtimeSubscribeOptions {
 export interface MembershipsRealtimeService {
     /**
      * Suscribe a cambios de balance y canjes de recompensa.
-     * @param userId ID del usuario
+     * @param authUserId `auth.users.id` (se resuelve a `profiles.id` para el filtro en BD)
      * @param options Callbacks y opciones
      * @returns Función para cancelar la suscripción
      */
     subscribe(
-        userId: string,
+        authUserId: string,
         options: MembershipsRealtimeSubscribeOptions
     ): () => void;
 }

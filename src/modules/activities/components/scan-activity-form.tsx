@@ -23,13 +23,13 @@ import { calculateEarnedAmount } from '../domain/balance';
 
 interface ScanActivityFormProps {
     programPublicId: string;
-    userId: string;
+    profileId: string;
     onScanAnother?: () => void;
 }
 
 export function ScanActivityForm({
     programPublicId,
-    userId,
+    profileId,
     onScanAnother,
 }: ScanActivityFormProps) {
     const [purchaseAmount, setPurchaseAmount] = useState('');
@@ -45,7 +45,7 @@ export function ScanActivityForm({
         data: membership,
         isLoading,
         isError,
-    } = useMembershipByClientId(programPublicId, userId);
+    } = useMembershipByClientId(programPublicId, profileId);
 
     const limitOnePerDay = membership?.program.limit_one_per_day ?? false;
     const { data: hasEarnToday, isPending: earnLimitPending } = useEarnLimitToday(

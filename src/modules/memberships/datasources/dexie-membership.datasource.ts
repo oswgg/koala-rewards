@@ -2,15 +2,19 @@ import Dexie, { type Table } from 'dexie';
 import type { LocalMembership, LocalMembershipDataSource } from './types.membership-datasource';
 
 const DB_NAME = 'koalacards-offline';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 class MembershipDexie extends Dexie {
     memberships!: Table<LocalMembership>;
 
     constructor() {
         super(DB_NAME);
-        this.version(DB_VERSION).stores({
+        this.version(2).stores({
             memberships: 'id, program_id, user_id, syncStatus, [user_id+program_id]',
+        });
+        this.version(DB_VERSION).stores({
+            memberships:
+                'id, program_id, user_id, profile_id, syncStatus, [user_id+program_id]',
         });
     }
 }

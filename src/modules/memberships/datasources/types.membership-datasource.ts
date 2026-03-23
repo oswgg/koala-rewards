@@ -24,7 +24,10 @@ export interface LocalMembership {
     program_id: string;
     /** When creating offline with only public_id, we store it here for sync */
     program_public_id?: string;
+    /** Supabase Auth `auth.users.id` (owner of the offline row). */
     user_id: string;
+    /** `profiles.id` once known from the server. */
+    profile_id?: string;
     balance: number;
     created_at: string;
     public_id?: string;

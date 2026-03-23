@@ -14,13 +14,28 @@ export interface MembershipService {
         programId: string,
         userId: string
     ): Promise<MembershipWithProgram | null>;
+    /** `profileId` = `profiles.id` (no auth lookup). */
+    getByProgramIdAndProfileId(
+        programId: string,
+        profileId: string
+    ): Promise<MembershipWithProgram | null>;
     getByProgramPublicIdAndUserId(
         programPublicId: string,
         userId: string
     ): Promise<MembershipWithProgram | null>;
+    /** `profileId` = `profiles.id` (no auth lookup). */
+    getByProgramPublicIdAndProfileId(
+        programPublicId: string,
+        profileId: string
+    ): Promise<MembershipWithProgram | null>;
     createByProgramPublicIdAndUserId(
         programPublicId: string,
         userId: string
+    ): Promise<MembershipWithProgram | null>;
+    /** `profileId` = `profiles.id` (no auth lookup). */
+    createByProgramPublicIdAndProfileId(
+        programPublicId: string,
+        profileId: string
     ): Promise<MembershipWithProgram | null>;
     hasEarnActivityToday(membershipId: string): Promise<boolean>;
 }

@@ -26,7 +26,7 @@ function toMembershipWithProgram(local: LocalMembership): MembershipWithProgram 
     return {
         id: local.remote_id ?? local.id,
         program_id: local.program_id,
-        user_id: local.user_id,
+        profile_id: local.profile_id ?? '',
         balance: local.balance,
         created_at: local.created_at,
         public_id: local.public_id ?? '',
@@ -138,12 +138,19 @@ export class CustomerMembershipRepositoryImpl implements CustomerMembershipRepos
         const local = localResult.status === 'fulfilled' ? localResult.value : [];
         const remote = remoteResult.status === 'fulfilled' ? remoteResult.value : [];
 
-        const remoteKeys = new Set(remote.map((r) => `${r.program_id}_${r.user_id}`));
+        const remoteKeys = new Set(remote.map((r) => `${r.program_id}_${r.profile_id}`));
         const remotePublicIds = new Set(remote.map((r) => r.program.public_id));
-        const localKeys = new Set(local.map((l) => `${l.program_id}_${l.user_id}`));
+        const localKeys = new Set(
+            local.map((l) =>
+                l.profile_id != null
+                    ? `${l.program_id}_${l.profile_id}`
+                    : `${l.program_id}_auth_${l.user_id}`
+            )
+        );
 
         const isInRemote = (l: LocalMembership) =>
-            remoteKeys.has(`${l.program_id}_${l.user_id}`) ||
+            (l.profile_id != null &&
+                remoteKeys.has(`${l.program_id}_${l.profile_id}`)) ||
             (l.program_public_id != null && remotePublicIds.has(l.program_public_id));
 
         if (this.isOnline()) {
@@ -156,17 +163,20 @@ export class CustomerMembershipRepositoryImpl implements CustomerMembershipRepos
 
             const remoteNotInLocal = remote.filter(
                 (r) =>
-                    !localKeys.has(`${r.program_id}_${r.user_id}`) &&
+                    !localKeys.has(`${r.program_id}_${r.profile_id}`) &&
                     !local.some(
                         (l) =>
-                            l.program_public_id === r.program.public_id && l.user_id === r.user_id
+                            l.program_public_id === r.program.public_id &&
+                            l.user_id === userId &&
+                            (l.profile_id === r.profile_id || l.profile_id == null)
                     )
             );
             for (const r of remoteNotInLocal) {
                 const localMembership: LocalMembership = {
-                    id: `local_${r.program_id}_${r.user_id}`,
+                    id: `local_${r.program_id}_${userId}`,
                     program_id: r.program_id,
-                    user_id: r.user_id,
+                    user_id: userId,
+                    profile_id: r.profile_id,
                     balance: r.balance,
                     created_at: r.created_at,
                     public_id: r.public_id,
@@ -255,6 +265,7 @@ export class CustomerMembershipRepositoryImpl implements CustomerMembershipRepos
                 program_public_id: undefined,
                 remote_id: remote.id,
                 public_id: remote.public_id,
+                profile_id: remote.profile_id,
                 balance: remote.balance,
                 syncStatus: 'synced',
                 syncError: undefined,

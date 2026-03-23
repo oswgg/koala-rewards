@@ -79,7 +79,7 @@ export async function GET() {
             programIds.length > 0
                 ? await supabase
                       .from('program_memberships')
-                      .select('id, user_id, created_at')
+                      .select('id, profile_id, created_at')
                       .in('program_id', programIds)
                       .gte('created_at', start)
                       .lt('created_at', end)
@@ -163,16 +163,16 @@ export async function GET() {
         const membershipIdsFromActivities = [...new Set(activityRows.map((a) => a.membership_id))];
         const programIdsFromActivities = [...new Set(activityRows.map((a) => a.program_id))];
 
-        const membershipById: Record<string, { user_id: string }> = {};
+        const membershipById: Record<string, { profile_id: string }> = {};
         const programById: Record<string, { name: string; reward_description: string }> = {};
 
         if (membershipIdsFromActivities.length > 0) {
             const { data: membershipsForActivities } = await supabase
                 .from('program_memberships')
-                .select('id, user_id')
+                .select('id, profile_id')
                 .in('id', membershipIdsFromActivities);
             (membershipsForActivities ?? []).forEach((m) => {
-                membershipById[m.id] = { user_id: m.user_id };
+                membershipById[m.id] = { profile_id: m.profile_id };
             });
         }
 

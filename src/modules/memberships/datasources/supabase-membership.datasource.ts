@@ -2,6 +2,7 @@ import { createClient } from '@/infrastructure/supabase/client';
 import type { MembershipWithProgram } from '../services/interface.membership-service';
 import type { StoredLoyaltyProgram } from '@/shared/types/loyalty-program';
 import type { RemoteMembershipDataSource } from './types.membership-datasource';
+import { getProfileIdByAuthUserId } from '@/modules/memberships/lib/resolve-profile-id';
 
 const MEMBERSHIP_WITH_PROGRAM_AND_BUSINESS = `
     *,
@@ -24,11 +25,15 @@ function toMembershipWithProgram(
 export class SupabaseMembershipDataSource implements RemoteMembershipDataSource {
     async create(programId: string, userId: string): Promise<MembershipWithProgram> {
         const supabase = createClient();
+        const profileId = await getProfileIdByAuthUserId(supabase, userId);
+        if (!profileId) {
+            throw new Error('No se encontró perfil para el usuario');
+        }
         const { data, error } = await supabase
             .from('program_memberships')
             .insert({
                 program_id: programId,
-                user_id: userId,
+                profile_id: profileId,
                 balance: 0,
             })
             .select(MEMBERSHIP_WITH_PROGRAM_AND_BUSINESS)
@@ -54,11 +59,16 @@ export class SupabaseMembershipDataSource implements RemoteMembershipDataSource 
             throw new Error('Programa no encontrado o no está disponible');
         }
 
+        const profileId = await getProfileIdByAuthUserId(supabase, userId);
+        if (!profileId) {
+            throw new Error('No se encontró perfil para el usuario');
+        }
+
         const { data, error } = await supabase
             .from('program_memberships')
             .insert({
                 program_id: program.id,
-                user_id: userId,
+                profile_id: profileId,
                 balance: 0,
             })
             .select(MEMBERSHIP_WITH_PROGRAM_AND_BUSINESS)
@@ -83,11 +93,13 @@ export class SupabaseMembershipDataSource implements RemoteMembershipDataSource 
 
     async hasMembership(programId: string, userId: string): Promise<boolean> {
         const supabase = createClient();
+        const profileId = await getProfileIdByAuthUserId(supabase, userId);
+        if (!profileId) return false;
         const { data, error } = await supabase
             .from('program_memberships')
             .select('id')
             .eq('program_id', programId)
-            .eq('user_id', userId)
+            .eq('profile_id', profileId)
             .maybeSingle();
 
         if (error) throw error;
@@ -99,10 +111,12 @@ export class SupabaseMembershipDataSource implements RemoteMembershipDataSource 
         userId: string
     ): Promise<boolean> {
         const supabase = createClient();
+        const profileId = await getProfileIdByAuthUserId(supabase, userId);
+        if (!profileId) return false;
         const { data, error } = await supabase
             .from('program_memberships')
             .select('id, loyalty_programs!inner(public_id)')
-            .eq('user_id', userId)
+            .eq('profile_id', profileId)
             .eq('loyalty_programs.public_id', programPublicId)
             .maybeSingle();
 
@@ -112,10 +126,12 @@ export class SupabaseMembershipDataSource implements RemoteMembershipDataSource 
 
     async getByUserId(userId: string): Promise<MembershipWithProgram[]> {
         const supabase = createClient();
+        const profileId = await getProfileIdByAuthUserId(supabase, userId);
+        if (!profileId) return [];
         const { data, error } = await supabase
             .from('program_memberships')
             .select(MEMBERSHIP_WITH_PROGRAM_AND_BUSINESS)
-            .eq('user_id', userId)
+            .eq('profile_id', profileId)
             .order('created_at', { ascending: true });
 
         if (error) throw error;
@@ -127,11 +143,13 @@ export class SupabaseMembershipDataSource implements RemoteMembershipDataSource 
         userId: string
     ): Promise<MembershipWithProgram | null> {
         const supabase = createClient();
+        const profileId = await getProfileIdByAuthUserId(supabase, userId);
+        if (!profileId) return null;
         const { data, error } = await supabase
             .from('program_memberships')
             .select(MEMBERSHIP_WITH_PROGRAM_AND_BUSINESS)
             .eq('program_id', programId)
-            .eq('user_id', userId)
+            .eq('profile_id', profileId)
             .maybeSingle();
 
         if (error) throw error;

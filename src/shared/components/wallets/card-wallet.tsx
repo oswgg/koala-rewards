@@ -162,7 +162,7 @@ export function CardWallet({
                                 qrUrl={buildCustomerScanUrl(
                                     getAppBaseUrlForQr(),
                                     memberships[expandedIndex].program.public_id,
-                                    memberships[expandedIndex].user_id
+                                    memberships[expandedIndex].profile_id
                                 )}
                                 theme={getCardTheme(memberships[expandedIndex].program.card_theme)}
                             />
