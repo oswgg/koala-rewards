@@ -2,7 +2,7 @@ import { Button } from '@/shared/components/ui/button';
 import { QrCode, UserPlus } from 'lucide-react';
 
 interface SelectingActionSectionProps {
-    onSelectAction: (action: 'new-customer' | 'customer-activity') => void;
+    onSelectAction: (action: 'new-customer' | 'activity-method') => void;
 }
 
 export function SelectingActionSection({ onSelectAction }: SelectingActionSectionProps) {
@@ -23,12 +23,12 @@ export function SelectingActionSection({ onSelectAction }: SelectingActionSectio
                     <p className="text-lg font-medium">Registrar Cliente</p>
                 </Button>
                 <Button
-                    onClick={() => onSelectAction('customer-activity')}
+                    onClick={() => onSelectAction('activity-method')}
                     variant="outline"
                     className="flex flex-col items-center gap-4 p-12"
                 >
                     <QrCode className="size-6" />
-                    <p className="text-lg font-medium">Registrar Visita</p>
+                    <p className="text-lg font-medium">Registrar actividad</p>
                 </Button>
             </main>
         </div>

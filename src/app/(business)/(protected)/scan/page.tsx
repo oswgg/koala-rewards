@@ -1,20 +1,22 @@
 'use client';
 
-import { Suspense, useEffect, useRef, useCallback, useState, useMemo } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Html5Qrcode } from 'html5-qrcode';
 import { AuthForm } from '@/shared/components/auth-form';
 import { useAuthSession } from '@/shared/hooks/useAuthSession';
-import { ScanActivityForm } from '@/modules/activities/components/scan-activity-form';
-import { parseCustomerQR, type CustomerQRData } from '@/shared/lib/qr-data';
 import { businessRoutes } from '@/shared/lib/routes';
-import { cn } from '@/shared/lib/utils';
 import { NewCustomerSection } from '@/modules/business/scan/components/new-customer-section/new-customer-section';
-import { CustomerActivitySection } from '@/modules/business/scan/components/customer-activity-section';
+import { ActivityByPhoneFlow } from '@/modules/business/scan/components/activity-by-phone-flow';
+import { ActivityByQrFlow } from '@/modules/business/scan/components/activity-by-qr-flow';
+import { ActivityMethodSection } from '@/modules/business/scan/components/activity-method-section';
 import { SelectingActionSection } from '@/modules/business/scan/components/selecting-action-section';
 
-const SCANNER_ELEMENT_ID = 'scan-membership-qr';
-type Action = 'selecting' | 'new-customer' | 'customer-activity';
+type Action =
+    | 'selecting'
+    | 'new-customer'
+    | 'activity-method'
+    | 'activity-by-qr'
+    | 'activity-by-phone';
 
 function ScanPageContent() {
     const router = useRouter();
@@ -22,93 +24,11 @@ function ScanPageContent() {
     const { isAuthenticated, isLoading: authLoading } = useAuthSession();
     const [action, setAction] = useState<Action>('selecting');
 
-    const queryData = useMemo(() => {
+    const hasUrlQrPayload = useMemo(() => {
         const p = searchParams.get('p');
         const u = searchParams.get('u');
-        if (p && u) return { program_public_id: p, profile_id: u } satisfies CustomerQRData;
-        return null;
+        return !!(p && u);
     }, [searchParams]);
-
-    const [persistedScan, setPersistedScan] = useState<CustomerQRData | null>(null);
-    const scannedData = persistedScan ?? queryData;
-
-    useEffect(() => {
-        if (queryData) {
-            setPersistedScan(queryData);
-            router.replace(businessRoutes.scan, { scroll: false });
-        }
-    }, [queryData, router]);
-
-    const scannerRef = useRef<Html5Qrcode | null>(null);
-    const isScanningRef = useRef(false);
-    const processedRef = useRef(false);
-
-    const stopScanner = useCallback(async () => {
-        if (scannerRef.current && isScanningRef.current) {
-            try {
-                await scannerRef.current.stop();
-            } catch (err) {
-                console.warn('Error stopping QR scanner:', err);
-            }
-            scannerRef.current.clear();
-            scannerRef.current = null;
-            isScanningRef.current = false;
-        }
-    }, []);
-
-    useEffect(() => {
-        if (!isAuthenticated || authLoading || scannedData) return;
-
-        processedRef.current = false;
-        let mounted = true;
-
-        const startScanner = async () => {
-            await new Promise((r) => setTimeout(r, 100));
-            if (!mounted || !document.getElementById(SCANNER_ELEMENT_ID)) return;
-
-            try {
-                const html5QrCode = new Html5Qrcode(SCANNER_ELEMENT_ID, { verbose: false });
-                scannerRef.current = html5QrCode;
-
-                await html5QrCode.start(
-                    { facingMode: 'environment' },
-                    {
-                        fps: 15,
-                        qrbox: (viewfinderWidth, viewfinderHeight) => {
-                            const edge = Math.min(viewfinderWidth, viewfinderHeight);
-                            const size = Math.max(180, Math.min(Math.floor(edge * 0.72), 340));
-                            return { width: size, height: size };
-                        },
-                        disableFlip: true,
-                    },
-                    (decodedText) => {
-                        if (!mounted || processedRef.current) return;
-                        const data = parseCustomerQR(decodedText);
-                        if (data) {
-                            processedRef.current = true;
-                            stopScanner();
-                            setPersistedScan(data);
-                        }
-                    },
-                    () => {}
-                );
-                isScanningRef.current = true;
-            } catch (err) {
-                console.error('Error starting QR scanner:', err);
-            }
-        };
-
-        startScanner();
-        return () => {
-            mounted = false;
-            stopScanner();
-        };
-    }, [isAuthenticated, authLoading, scannedData, stopScanner]);
-
-    const handleScanAnother = useCallback(() => {
-        setPersistedScan(null);
-        router.replace(businessRoutes.scan);
-    }, [router]);
 
     if (!isAuthenticated && !authLoading) {
         return (
@@ -134,60 +54,46 @@ function ScanPageContent() {
 
     if (action === 'new-customer') {
         return (
-            <NewCustomerSection onRegisterVisit={() => setAction('customer-activity')} />
+            <NewCustomerSection
+                onRegisterVisit={() => setAction('activity-method')}
+                onCancel={() => setAction('selecting')}
+            />
         );
     }
 
-    if (action === 'customer-activity') {
-        return <CustomerActivitySection />;
-    }
-
-    if (scannedData) {
+    if (action === 'activity-method') {
         return (
-            <div className="flex min-h-svh flex-col bg-background">
-                <header className="shrink-0 border-b border-border bg-card px-4 py-4">
-                    <h1 className="text-lg font-semibold text-foreground">Registrar actividad</h1>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                        Marca una visita o venta en la tarjeta del cliente
-                    </p>
-                </header>
-                <main className="flex-1 overflow-auto p-4">
-                    <div className="mx-auto max-w-md">
-                        <ScanActivityForm
-                            programPublicId={scannedData.program_public_id}
-                            profileId={scannedData.profile_id}
-                            onScanAnother={handleScanAnother}
-                        />
-                    </div>
-                </main>
+            <ActivityMethodSection
+                onSelectQr={() => setAction('activity-by-qr')}
+                onSelectPhone={() => setAction('activity-by-phone')}
+                onBack={() => setAction('selecting')}
+            />
+        );
+    }
+
+    /** QR: escáner o resultado; también enlaces `?p=&u=` aunque el menú siga en “selecting”. */
+    if (action === 'activity-by-qr' || hasUrlQrPayload) {
+        return (
+            <ActivityByQrFlow
+                scannerMode={action === 'activity-by-qr'}
+                onBack={() => setAction('activity-method')}
+                onCancel={() => setAction('selecting')}
+            />
+        );
+    }
+
+    if (action === 'activity-by-phone') {
+        return (
+            <div className="fixed inset-0 z-40 flex min-h-0 flex-col overflow-hidden bg-background">
+                <ActivityByPhoneFlow
+                    onBack={() => setAction('activity-method')}
+                    onCancel={() => setAction('selecting')}
+                />
             </div>
         );
     }
 
-    return (
-        <div className="flex min-h-svh flex-col bg-background">
-            <header className="shrink-0 border-b border-border bg-card px-4 py-4">
-                <h1 className="text-lg font-semibold text-foreground">
-                    Escanear tarjeta del cliente
-                </h1>
-                <p className="mt-1 text-sm text-muted-foreground">
-                    Apunta la cámara al código QR de la tarjeta de fidelidad del cliente
-                </p>
-            </header>
-            <div className="flex flex-1 flex-col overflow-auto px-4 pb-8 pt-4">
-                <div className="mx-auto w-full max-w-sm sm:max-w-md md:max-w-lg">
-                    <div
-                        id={SCANNER_ELEMENT_ID}
-                        className={cn(
-                            'relative aspect-square w-full overflow-hidden rounded-xl bg-black',
-                            /* html5-qrcode fija ancho al vídeo; forzamos llenar el cuadrado para evitar bandas claras */
-                            '[&_video]:block [&_video]:h-full! [&_video]:w-full! [&_video]:object-cover'
-                        )}
-                    />
-                </div>
-            </div>
-        </div>
-    );
+    return null;
 }
 
 export default function ScanPage() {

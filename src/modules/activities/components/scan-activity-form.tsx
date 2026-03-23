@@ -25,12 +25,15 @@ interface ScanActivityFormProps {
     programPublicId: string;
     profileId: string;
     onScanAnother?: () => void;
+    /** Defaults to "Escanear otra tarjeta" (e.g. phone flow uses different copy). */
+    scanAnotherLabel?: string;
 }
 
 export function ScanActivityForm({
     programPublicId,
     profileId,
     onScanAnother,
+    scanAnotherLabel = 'Escanear otra tarjeta',
 }: ScanActivityFormProps) {
     const [purchaseAmount, setPurchaseAmount] = useState('');
     const [cashbackApplyError, setCashbackApplyError] = useState<string | null>(null);
@@ -595,7 +598,7 @@ export function ScanActivityForm({
                     className="flex w-full items-center justify-center gap-2 rounded-lg border border-border py-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 >
                     <ScanLine className="size-4" />
-                    Escanear otra tarjeta
+                    {scanAnotherLabel}
                 </button>
             ) : (
                 <Link
@@ -603,7 +606,7 @@ export function ScanActivityForm({
                     className="flex w-full items-center justify-center gap-2 rounded-lg border border-border py-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 >
                     <ScanLine className="size-4" />
-                    Escanear otra tarjeta
+                    {scanAnotherLabel}
                 </Link>
             )}
         </div>
