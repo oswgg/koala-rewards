@@ -32,6 +32,11 @@ export interface UseAuthFormReturn {
     handleVerifyOtp: (e: React.FormEvent) => Promise<void>;
     handleBackToEmail: () => void;
     handleResendOtp: () => Promise<void>;
+    /** Ir al paso OTP sin enviar correo (p. ej. el usuario ya tiene el código). */
+    handleGoToOtpStep: () => void;
+    /** True si el usuario entró al OTP sin disparar envío en esta sesión. */
+    enteredOtpWithoutSending: boolean;
+    canSkipToOtp: boolean;
     sendOtpMutation: UseMutationResult<void, Error, void>;
     verifyOtpMutation: UseMutationResult<User, Error, { email: string; code: string }>;
 }
@@ -47,6 +52,7 @@ export function useAuthForm({
     const [phone, setPhone] = useState<string>('');
     const [step, setStep] = useState<AuthFormStep>('email');
     const [otp, setOtp] = useState<string>('');
+    const [enteredOtpWithoutSending, setEnteredOtpWithoutSending] = useState(false);
 
     const sendOtpMutation = useMutation({
         mutationFn: async () => {
@@ -57,6 +63,7 @@ export function useAuthForm({
             }
         },
         onSuccess: () => {
+            setEnteredOtpWithoutSending(false);
             setStep('otp');
         },
     });
@@ -108,8 +115,21 @@ export function useAuthForm({
     const handleBackToEmail = () => {
         setStep('email');
         setOtp('');
+        setEnteredOtpWithoutSending(false);
         sendOtpMutation.reset();
         verifyOtpMutation.reset();
+    };
+
+    const canSkipToOtp =
+        Boolean(email.trim()) && (type !== 'signup' || (Boolean(name.trim()) && Boolean(phone.trim())));
+
+    const handleGoToOtpStep = () => {
+        if (!canSkipToOtp) return;
+        sendOtpMutation.reset();
+        verifyOtpMutation.reset();
+        setOtp('');
+        setEnteredOtpWithoutSending(true);
+        setStep('otp');
     };
 
     const handleResendOtp = async () => {
@@ -133,6 +153,9 @@ export function useAuthForm({
         handleVerifyOtp,
         handleBackToEmail,
         handleResendOtp,
+        handleGoToOtpStep,
+        enteredOtpWithoutSending,
+        canSkipToOtp,
         sendOtpMutation,
         verifyOtpMutation,
     };

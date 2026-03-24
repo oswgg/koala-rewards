@@ -86,6 +86,9 @@ function AuthFormContent({
         handleVerifyOtp,
         handleBackToEmail,
         handleResendOtp,
+        handleGoToOtpStep,
+        enteredOtpWithoutSending,
+        canSkipToOtp,
         sendOtpMutation,
         verifyOtpMutation,
         name,
@@ -206,6 +209,16 @@ function AuthFormContent({
                                 >
                                     {emailStepButtonLoadingLabel}
                                 </Button>
+                                <Button
+                                    type="button"
+                                    variant="link"
+                                    size="sm"
+                                    className="h-auto text-muted-foreground"
+                                    onClick={handleGoToOtpStep}
+                                    disabled={isPending || !canSkipToOtp}
+                                >
+                                    Ya tengo un código
+                                </Button>
                             </Field>
                         </>
                     )}
@@ -220,8 +233,17 @@ function AuthFormContent({
                                     disabled={isPending}
                                 />
                                 <FieldDescription className="mt-4!">
-                                    We sent a code to{' '}
-                                    <span className="font-bold underline">{email}</span>
+                                    {enteredOtpWithoutSending ? (
+                                        <>
+                                            Enter the verification code for{' '}
+                                            <span className="font-bold underline">{email}</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            We sent a code to{' '}
+                                            <span className="font-bold underline">{email}</span>
+                                        </>
+                                    )}
                                 </FieldDescription>
                                 <Button
                                     type="button"
