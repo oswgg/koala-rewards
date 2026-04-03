@@ -1,18 +1,22 @@
 import {
     calculateEarnedAmount,
     calculateNewBalance,
+} from '@koalacards/loyalty/core/domain/activities/balance';
+import {
     EARN_PER_DAY_LIMIT_MESSAGE,
-    isRewardReady,
     RegisterEarnActivityError,
+    RegisterEarnErrorType,
+} from '@koalacards/loyalty/core/domain/activities/register-activity-errors';
+import {
     RegisterEarnActivityInput,
     RegisterEarnActivityResult,
-    RegisterEarnErrorType,
     RegisterRedeemActivityInput,
     RegisterRedeemActivityResult,
-    StoredLoyaltyProgram,
-    utcDayBoundsIso,
-} from '@koalacards/loyalty/core';
-import { MembershipActivitiesRemoteDataSource } from '@loyalty/data/membership-activities/remote/membership-activities.remote.datasource.interface';
+} from '@koalacards/loyalty/core/domain/types/activity';
+import { StoredLoyaltyProgram } from '@koalacards/loyalty/core/domain/types/loyalty-program';
+import { utcDayBoundsIso } from '@koalacards/loyalty/core/domain/activities/earn-limit';
+import { isRewardReady } from '@koalacards/loyalty/core/lib/reward';
+import type { MembershipActivitiesRemoteDataSource } from './membership-activities.remote.datasource.interface';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 async function hasEarnActivityToday(

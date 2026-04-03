@@ -1,10 +1,10 @@
+import { utcDayBoundsIso } from '@koalacards/loyalty/core/domain/activities/earn-limit';
+import { StoredLoyaltyProgram } from '@koalacards/loyalty/core/domain/types/loyalty-program';
 import {
     MembershipWithProgram,
     ProgramMembership,
-    StoredLoyaltyProgram,
-    utcDayBoundsIso,
-} from '@koalacards/loyalty/core';
-import { RemoteMembershipDataSource } from '@koalacards/loyalty/data/memberships/remote/memberships.remote.datasource.interface';
+} from '@koalacards/loyalty/core/domain/types/membership';
+import { RemoteMembershipDataSource } from './memberships.remote.datasource.interface';
 import { getProfileIdByAuthUserId } from '@koalacards/loyalty/core/lib/resolve-profile-id';
 import { SupabaseClient } from '@supabase/supabase-js';
 

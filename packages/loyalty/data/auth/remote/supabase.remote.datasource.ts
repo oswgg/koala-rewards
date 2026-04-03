@@ -1,4 +1,5 @@
-import { toUser, User } from '@koalacards/loyalty/core';
+import { User } from '@koalacards/loyalty/core/domain/types/user';
+import { toUser } from '@koalacards/loyalty/core/lib/user-mapper';
 import { RemoteAuthDataSource } from './auth.remote.datasource.interface';
 import { isAuthApiError, SupabaseClient } from '@supabase/supabase-js';
 

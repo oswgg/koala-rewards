@@ -1,11 +1,12 @@
-import { MembershipWithProgram, ProgramMembership } from '@koalacards/loyalty/core';
 import {
     LocalMembership,
-    LocalMembershipDataSource,
+    MembershipWithProgram,
+    ProgramMembership,
     ProgramSnapshot,
-} from '@koalacards/loyalty/core/domain/types/membership-datasource.types';
+} from '@koalacards/loyalty/core/domain/types/membership';
 import { Business } from '@koalacards/loyalty/core/domain/types/business';
-import { MembershipsRemoteDataSource } from '@koalacards/loyalty/data/memberships/remote/memberships.remote.datasource.interface';
+import { LocalMembershipDataSource } from './local/memberships.local.datasource.interface';
+import { RemoteMembershipDataSource } from './remote/memberships.remote.datasource.interface';
 import {
     JoinProgramResult,
     MembershipsRepository,
@@ -73,7 +74,7 @@ function toProgramMembership(local: LocalMembership): ProgramMembership {
 
 export class MembershipsRepositoryImpl implements MembershipsRepository {
     constructor(
-        private readonly remote: MembershipsRemoteDataSource,
+        private readonly remote: RemoteMembershipDataSource,
         private readonly local: LocalMembershipDataSource,
         private readonly isOnline: () => boolean
     ) {}

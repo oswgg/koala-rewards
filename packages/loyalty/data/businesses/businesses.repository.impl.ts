@@ -1,5 +1,5 @@
-import { Business, CreateBusinessInput } from '@koalacards/loyalty/core';
-import { BusinessesRemoteDataSource } from '@koalacards/loyalty/data/businesses/remote/businesses.remote.datasource.interface';
+import { Business, CreateBusinessInput } from '@koalacards/loyalty/core/domain/types/business';
+import { BusinessesRemoteDataSource } from './remote/businesses.remote.datasource.interface';
 import { BusinessesRepository } from '@koalacards/loyalty/core/domain/repositories/businesses.repo.interface';
 
 export class BusinessesRepositoryImpl implements BusinessesRepository {

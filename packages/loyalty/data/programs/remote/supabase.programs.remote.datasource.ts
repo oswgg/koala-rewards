@@ -1,5 +1,8 @@
-import { CreateProgramInput, StoredLoyaltyProgram } from '@koalacards/loyalty/core';
-import { ProgramsRemoteDataSource } from '@koalacards/loyalty/data/programs/remote/programs.remote.datasource.interface';
+import {
+    CreateProgramInput,
+    StoredLoyaltyProgram,
+} from '@koalacards/loyalty/core/domain/types/loyalty-program';
+import { ProgramsRemoteDataSource } from './programs.remote.datasource.interface';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 const PROGRAM_WITH_BUSINESS = '*, business:businesses(*)';
