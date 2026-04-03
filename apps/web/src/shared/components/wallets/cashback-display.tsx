@@ -1,7 +1,7 @@
 'use client';
 
+import { CardTheme } from '@koalacards/loyalty';
 import { motion } from 'motion/react';
-import { CardTheme } from './mermbership-card-detail';
 
 export function CashbackDisplay({
     balance,
