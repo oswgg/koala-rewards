@@ -1,5 +1,8 @@
-import { CreateProfileAndMembershipsInput, ProfileByContact } from '@koalacards/loyalty/core';
-import { ProfilesRemoteDataSource } from '@koalacards/loyalty/data/profiles/remote/profiles.remote.datasource.interface';
+import {
+    CreateProfileAndMembershipsInput,
+    ProfileByContact,
+} from '@koalacards/loyalty/core/domain/types/profile';
+import { ProfilesRemoteDataSource } from './profiles.remote.datasource.interface';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 type FindProfileByContactRow = {

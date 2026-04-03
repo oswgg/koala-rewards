@@ -1,4 +1,4 @@
-import { LocalMembership } from '@loyalty/core';
+import type { LocalMembership } from '@koalacards/loyalty/core/domain/types/membership';
 
 export interface LocalMembershipDataSource {
     save(membership: LocalMembership): Promise<LocalMembership>;

@@ -1,6 +1,6 @@
 import { AuthRepository } from '@koalacards/loyalty/core/domain/repositories/auth.repo.interface';
 import { RemoteAuthDataSource } from './remote/auth.remote.datasource.interface';
-import { User } from '@koalacards/loyalty/core';
+import { User } from '@koalacards/loyalty/core/domain/types/user';
 import { AuthIdentityRemoteDatasource } from './remote/auth.identity.remote.datasource';
 
 export class AuthRepositoryImpl implements AuthRepository {
