@@ -1,21 +1,44 @@
-# Next.js template
+# koalacards Monorepo
 
-This is a Next.js template with shadcn/ui.
+Estructura base del monorepo:
 
-## Adding components
-
-To add components to your app, run the following command:
-
-```bash
-npx shadcn@latest add button
+```text
+.
+├─ apps/
+│  ├─ api/
+│  ├─ web/
+│  └─ <futuras-apps>/   # mobile, desktop, etc.
+├─ packages/
+│  └─ loyalty/
+│     ├─ core/ (modulos de dominio/servicios)
+│     └─ data/ (modulos de acceso a datos)
+└─ package.json
 ```
 
-This will place the ui components in the `components` directory.
+## Convenciones
 
-## Using components
+- `apps/`: aplicaciones ejecutables (frontend, backend, mobile, desktop, etc.).
+- `packages/`: librerias compartidas y reutilizables entre apps.
+- `packages/loyalty`: paquete unificado que contiene logica de negocio y acceso a datos (`@koalacards/loyalty`).
 
-To use the components in your app, import them as follows:
+## Workspaces
 
-```tsx
-import { Button } from "@/components/ui/button";
+El monorepo esta configurado con Bun workspaces en la raiz:
+
+```json
+{
+	"workspaces": ["apps/*", "packages/*"]
+}
+```
+
+## Scripts utiles
+
+Desde la raiz:
+
+```bash
+bun run dev
+bun run build
+bun run start
+bun run lint
+bun run typecheck
 ```

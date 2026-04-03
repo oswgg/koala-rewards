@@ -1,6 +1,6 @@
 # dependencies
-/node_modules
-/.pnp
+node_modules/
+.pnp
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -9,21 +9,21 @@
 !.yarn/versions
 
 # testing
-/coverage
+coverage/
 
 # next.js
-/.next/
-/out/
+.next/
+out/
 
 # PWA (generated at build)
-/public/sw.js
-/public/sw.js.map
-/public/workbox-*.js
-/public/workbox-*.js.map
-/public/fallback-*.js
+public/sw.js
+public/sw.js.map
+public/workbox-*.js
+public/workbox-*.js.map
+public/fallback-*.js
 
 # production
-/build
+build/
 
 # misc
 .DS_Store
@@ -36,15 +36,15 @@ yarn-error.log*
 pnpm-debug.log*
 
 # env files
+.env
 .env*.local
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
-.env
-
 # open-next
 .open-next/
 .open-next.config.ts
 wrangler.json
+.wrangler/
