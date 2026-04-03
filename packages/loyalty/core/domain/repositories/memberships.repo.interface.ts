@@ -1,5 +1,8 @@
-import type { ProgramSnapshot } from '../types/membership-datasource.types';
-import type { MembershipWithProgram, ProgramMembership } from '../types/membership';
+import type {
+    MembershipWithProgram,
+    ProgramMembership,
+    ProgramSnapshot,
+} from '../types/membership';
 
 export interface JoinProgramResult {
     membership: MembershipWithProgram;
