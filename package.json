@@ -2,7 +2,7 @@
   "name": "koalacards",
   "version": "0.0.1",
   "private": true,
-  "workspaces": ["core", "packages/*"],
+  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "dev": "bun run --filter @koalacards/web dev",
     "build": "bun run --filter @koalacards/web build",

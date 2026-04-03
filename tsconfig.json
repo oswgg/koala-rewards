@@ -1,7 +1,7 @@
 {
   "references": [
-    { "path": "./core" },
-    { "path": "./packages/web" }
+    { "path": "./packages/loyalty" },
+    { "path": "./apps/web" }
   ],
   "files": []
 }

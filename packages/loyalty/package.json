@@ -1,0 +1,28 @@
+{
+  "name": "@koalacards/loyalty",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./core": "./core/index.ts",
+    "./core/*": "./core/*.ts",
+    "./data": "./data/index.ts",
+    "./data/*": "./data/*.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/auth-js": "^2.100.0",
+    "@supabase/supabase-js": "^2.98.0",
+    "lz-string": "^1.5.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/lz-string": "^1.5.0",
+    "typescript": "^5.9.3"
+  }
+}
