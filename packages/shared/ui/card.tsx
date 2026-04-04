@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { cn } from '@koalacards/shared/lib/ui-utils';
+import { cn } from '@vado/shared/lib/ui-utils';
 
 function Card({ className, ...props }: React.ComponentProps<'div'>) {
     return (

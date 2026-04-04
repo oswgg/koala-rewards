@@ -3,8 +3,8 @@
 import { motion } from 'motion/react';
 import { Gift } from 'lucide-react';
 
-import { getCardTheme, isRewardReady, LoyaltyProgramType, CardTheme } from '@koalacards/loyalty';
-import { CashbackDisplay, PointsDisplay, StampsDisplay } from '@koalacards/loyalty/ui';
+import { getCardTheme, isRewardReady, LoyaltyProgramType, CardTheme } from '@vado/loyalty';
+import { CashbackDisplay, PointsDisplay, StampsDisplay } from '@vado/loyalty/ui';
 
 export const CARD_HEIGHT = 275;
 export const PEEK = 72;

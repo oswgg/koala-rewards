@@ -1,11 +1,11 @@
-import { utcDayBoundsIso } from '@koalacards/loyalty/core/domain/activities/earn-limit';
-import { StoredLoyaltyProgram } from '@koalacards/loyalty/core/domain/types/loyalty-program';
+import { utcDayBoundsIso } from '@vado/loyalty/core/domain/activities/earn-limit';
+import { StoredLoyaltyProgram } from '@vado/loyalty/core/domain/types/loyalty-program';
 import {
     MembershipWithProgram,
     ProgramMembership,
-} from '@koalacards/loyalty/core/domain/types/membership';
+} from '@vado/loyalty/core/domain/types/membership';
 import { RemoteMembershipDataSource } from './memberships.remote.datasource.interface';
-import { getProfileIdByAuthUserId } from '@koalacards/loyalty/core/lib/resolve-profile-id';
+import { getProfileIdByAuthUserId } from '@vado/loyalty/core/lib/resolve-profile-id';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 const MEMBERSHIP_WITH_PROGRAM_AND_BUSINESS = `

@@ -1,6 +1,6 @@
 'use client';
 
-import { CARD_HEIGHT, PEEK } from '@koalacards/loyalty/ui';
+import { CARD_HEIGHT, PEEK } from '@vado/loyalty/ui';
 
 const SKELETON_CARD_COUNT = 3;
 

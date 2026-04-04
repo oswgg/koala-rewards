@@ -1,6 +1,6 @@
 'use client';
 
-import { CardTheme } from '@koalacards/loyalty';
+import { CardTheme } from '@vado/loyalty';
 import { Star } from 'lucide-react';
 import { motion } from 'motion/react';
 

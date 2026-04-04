@@ -1,6 +1,6 @@
 'use client';
 
-import { MembershipsRepository } from '@loyalty/core';
+import { MembershipsRepository } from '@vado/loyalty/core';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 export interface EarnLimitTodayProps {

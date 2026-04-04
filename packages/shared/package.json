@@ -1,10 +1,10 @@
 {
-    "name": "@koalacards/shared",
+    "name": "@vado/shared",
     "version": "0.0.1",
     "type": "module",
     "private": true,
-    "main": "./components/index.ts",
-    "types": "./components/index.ts",
+    "main": "./index.ts",
+    "types": "./index.ts",
     "exports": {
         ".": "./index.ts",
         "./hooks": "./hooks/index.ts",
@@ -33,7 +33,7 @@
         "tailwindcss": "^4.2.1"
     },
     "dependencies": {
-        "@koalacards/loyalty": "workspace:*",
+        "@vado/loyalty": "workspace:*",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "tailwind-merge": "^3.5.0",

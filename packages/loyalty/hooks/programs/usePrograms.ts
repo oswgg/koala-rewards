@@ -1,5 +1,4 @@
-import { ProgramsRepository } from '@koalacards/loyalty/core/domain/repositories';
-import { StoredLoyaltyProgram } from '@loyalty/core';
+import { StoredLoyaltyProgram, ProgramsRepository } from '@vado/loyalty/core';
 import { useQuery } from '@tanstack/react-query';
 
 export const programsQueryKey = ['programs'] as const;

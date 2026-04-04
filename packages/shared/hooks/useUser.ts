@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { AuthRepository, User } from '@koalacards/loyalty';
+import { AuthRepository, User } from '@vado/loyalty';
 
 export interface UseUserProps {
     authRepository: AuthRepository;

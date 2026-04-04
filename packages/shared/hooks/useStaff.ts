@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { AuthRepository, Staff } from '@koalacards/loyalty';
+import { AuthRepository, Staff } from '@vado/loyalty';
 import { useUser } from './useUser';
 
 export interface UseStaffProps {

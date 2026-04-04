@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { MembershipActivitiesRepository, RegisterRedeemActivityInput } from '@koalacards/loyalty';
+import { MembershipActivitiesRepository, RegisterRedeemActivityInput } from '@vado/loyalty';
 
 export interface UseRedeemRewardProps {
     membershipActivitiesRepository: MembershipActivitiesRepository;

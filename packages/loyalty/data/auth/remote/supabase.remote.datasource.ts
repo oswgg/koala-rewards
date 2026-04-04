@@ -1,5 +1,5 @@
-import { User, Staff } from '@koalacards/loyalty/core/domain/types/index';
-import { toUser } from '@koalacards/loyalty/core/lib/user-mapper';
+import { User, Staff } from '@vado/loyalty/core/domain/types/index';
+import { toUser } from '@vado/loyalty/core/lib/user-mapper';
 import { RemoteAuthDataSource } from './auth.remote.datasource.interface';
 import { isAuthApiError, SupabaseClient } from '@supabase/supabase-js';
 

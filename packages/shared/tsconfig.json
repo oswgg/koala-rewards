@@ -16,8 +16,8 @@
         "baseUrl": ".",
         "paths": {
             "@ui/*": ["./*"],
-            "@koalacards/shared/ui": ["ui/index.ts"],
-            "@koalacards/shared/ui/*": ["ui/*"]
+            "@vado/shared/ui": ["ui/index.ts"],
+            "@vado/shared/ui/*": ["ui/*"]
         }
     },
     "include": ["**/*.ts", "**/*.tsx"],

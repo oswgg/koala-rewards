@@ -15,11 +15,11 @@
         "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {
-            "@loyalty/*": ["./*"],
-            "@koalacards/loyalty": ["./index.ts"],
-            "@koalacards/loyalty/*": ["./*"],
-            "@koalacards/loyalty/ui": ["./ui/index.ts"],
-            "@koalacards/loyalty/ui/*": ["./ui/*"]
+            "@vado/*": ["./*"],
+            "@vado/loyalty": ["./index.ts"],
+            "@vado/loyalty/*": ["./*"],
+            "@vado/loyalty/ui": ["./ui/index.ts"],
+            "@vado/loyalty/ui/*": ["./ui/*"]
         }
     },
     "include": ["**/*.ts"],

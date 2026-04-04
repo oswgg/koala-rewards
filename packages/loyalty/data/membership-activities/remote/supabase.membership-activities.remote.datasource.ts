@@ -1,21 +1,21 @@
 import {
     calculateEarnedAmount,
     calculateNewBalance,
-} from '@koalacards/loyalty/core/domain/activities/balance';
+} from '@vado/loyalty/core/domain/activities/balance';
 import {
     EARN_PER_DAY_LIMIT_MESSAGE,
     RegisterEarnActivityError,
     RegisterEarnErrorType,
-} from '@koalacards/loyalty/core/domain/activities/register-activity-errors';
+} from '@vado/loyalty/core/domain/activities/register-activity-errors';
 import {
     RegisterEarnActivityInput,
     RegisterEarnActivityResult,
     RegisterRedeemActivityInput,
     RegisterRedeemActivityResult,
-} from '@koalacards/loyalty/core/domain/types/activity';
-import { StoredLoyaltyProgram } from '@koalacards/loyalty/core/domain/types/loyalty-program';
-import { utcDayBoundsIso } from '@koalacards/loyalty/core/domain/activities/earn-limit';
-import { isRewardReady } from '@koalacards/loyalty/core/lib/reward';
+} from '@vado/loyalty/core/domain/types/activity';
+import { StoredLoyaltyProgram } from '@vado/loyalty/core/domain/types/loyalty-program';
+import { utcDayBoundsIso } from '@vado/loyalty/core/domain/activities/earn-limit';
+import { isRewardReady } from '@vado/loyalty/core/lib/reward';
 import type { MembershipActivitiesRemoteDataSource } from './membership-activities.remote.datasource.interface';
 import { SupabaseClient } from '@supabase/supabase-js';
 

@@ -3,9 +3,9 @@ import {
     RegisterEarnActivityResult,
     RegisterRedeemActivityInput,
     RegisterRedeemActivityResult,
-} from '@koalacards/loyalty/core/domain/types/activity';
+} from '@vado/loyalty/core/domain/types/activity';
 import type { MembershipActivitiesRemoteDataSource } from './remote/membership-activities.remote.datasource.interface';
-import type { MembershipActivitiesRepository } from '@koalacards/loyalty/core/domain/repositories/membership-activities.repo.interface';
+import type { MembershipActivitiesRepository } from '@vado/loyalty';
 
 export class MembershipActivitiesRepositoryImpl implements MembershipActivitiesRepository {
     constructor(private readonly remote: MembershipActivitiesRemoteDataSource) {}

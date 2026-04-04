@@ -1,7 +1,7 @@
 import type {
     MembershipWithProgram,
     ProgramMembership,
-} from '@koalacards/loyalty/core/domain/types/membership';
+} from '@vado/loyalty/core/domain/types/membership';
 
 export interface RemoteMembershipDataSource {
     create(programId: string, userId: string): Promise<ProgramMembership>;

@@ -1,7 +1,7 @@
 import {
     CreateProgramInput,
     StoredLoyaltyProgram,
-} from '@koalacards/loyalty/core/domain/types/loyalty-program';
+} from '@vado/loyalty/core/domain/types/loyalty-program';
 import { ProgramsRemoteDataSource } from './programs.remote.datasource.interface';
 import { SupabaseClient } from '@supabase/supabase-js';
 
