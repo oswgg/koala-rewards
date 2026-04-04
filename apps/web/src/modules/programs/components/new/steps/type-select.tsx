@@ -1,8 +1,7 @@
-import { FormRadioGroup } from '@/shared/components/form-radio-group';
 import { programTypeOptions } from '@/modules/programs/data/program-type-options';
 import { createProgramFormOptions } from '@/modules/programs/hooks/useCreateLoyaltyProgram';
 import { useTypedAppFormContext } from '@/infrastructure/tanstack-form/form-context';
-import { Button } from '@/shared/components/ui/button';
+import { Button, FormRadioGroup } from '@koalacards/shared/ui';
 
 interface TypeSelectProps {
     nextStep: () => void;

@@ -2,8 +2,14 @@
 
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { CARD_HEIGHT, MembershipCardPreview, PEEK } from './membership-card-preview';
-import { buildCustomerScanUrl, getCardTheme, MembershipWithProgram } from '@koalacards/loyalty';
+import {
+    buildCustomerScanUrl,
+    CARD_HEIGHT,
+    getCardTheme,
+    MembershipCardPreview,
+    MembershipWithProgram,
+    PEEK,
+} from '@koalacards/loyalty';
 import { getAppBaseUrlForQr } from '@/shared/lib/qr-data';
 import { MemberShipCardDetailView } from './mermbership-card-detail';
 

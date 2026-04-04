@@ -3,8 +3,14 @@
 import Link from 'next/link';
 import { Star } from 'lucide-react';
 import { typeConfig } from '@/shared/components/wallets/mermbership-card-detail';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/card';
-import { Button } from '@/ui/button';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+    Button,
+} from '@koalacards/shared/ui';
 import { StoredLoyaltyProgram } from '@koalacards/loyalty';
 
 interface JoinProgramDetailsProps {

@@ -1,5 +1,5 @@
 import { AuthForm } from '@/shared/components/auth-form';
-import { businessRoutes } from '@/shared/lib/routes';
+import { businessPortalRoutes } from '@koalacards/loyalty';
 
 export default function SignupPage() {
     return (
@@ -7,10 +7,10 @@ export default function SignupPage() {
             <div className="w-full max-w-sm">
                 <AuthForm
                     type="signup"
-                    redirectTo={businessRoutes.onboarding}
+                    redirectTo={businessPortalRoutes.onboarding}
                     redirectOnChange={{
-                        login: businessRoutes.login,
-                        signup: businessRoutes.signup,
+                        login: businessPortalRoutes.login,
+                        signup: businessPortalRoutes.signup,
                     }}
                 />
             </div>

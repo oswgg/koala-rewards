@@ -4,20 +4,25 @@ import Link from 'next/link';
 import { Heart, LayoutDashboard, Menu, QrCode, ScanLine } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { usePathname } from 'next/navigation';
-import { Button } from '@/ui/button';
 import {
+    Button,
     Sheet,
     SheetContent,
     SheetHeader,
     SheetTitle,
     SheetTrigger,
-} from '@/shared/components/ui/sheet';
-import { businessRoutes } from '@/shared/lib/routes';
+} from '@koalacards/shared/ui';
+import { businessPortalRoutes, scannerPortalRoutes } from '@koalacards/loyalty';
 
 const navHome = [
-    { title: 'Dashboard', href: businessRoutes.dashboard, icon: LayoutDashboard },
-    { title: 'Programas', href: businessRoutes.programs, icon: Heart },
-    { title: 'Escanear tarjeta', href: businessRoutes.scan, icon: ScanLine },
+    {
+        title: 'Dashboard',
+        href: businessPortalRoutes.dashboard,
+        icon: LayoutDashboard,
+        target: '_self',
+    },
+    { title: 'Programas', href: businessPortalRoutes.programs, icon: Heart, target: '_self' },
+    { title: 'Escanear tarjeta', href: scannerPortalRoutes.url, icon: ScanLine, target: '_blank' },
 ];
 
 function SidebarNav() {
@@ -31,13 +36,12 @@ function SidebarNav() {
                 </p>
                 <ul className="space-y-1">
                     {navHome.map((item) => {
-                        const isActive =
-                            pathname === item.href ||
-                            (item.href === businessRoutes.scan && pathname.startsWith('/scan'));
+                        const isActive = pathname === item.href;
                         return (
                             <li key={item.title}>
                                 <Link
                                     href={item.href}
+                                    target={item.target}
                                     className={cn(
                                         'flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors',
                                         isActive
@@ -80,7 +84,8 @@ function MobileScanFab() {
 
     return (
         <Link
-            href={businessRoutes.scan}
+            href={scannerPortalRoutes.url}
+            target="_blank"
             className={cn(
                 'fixed z-50 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg',
                 'bottom-[max(1.25rem,env(safe-area-inset-bottom,0px))] right-[max(1rem,env(safe-area-inset-right,0px))]',

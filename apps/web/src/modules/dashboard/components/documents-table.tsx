@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { ChevronDown, GripHorizontal, Loader2, Plus } from 'lucide-react';
 
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/ui/button';
 import { useDashboardTableData } from '../hooks/useDashboardTableData';
+import { Button } from '@koalacards/shared/ui';
 
 type TabId = 'latest-activities' | 'new-customers' | 'sales' | 'rewards-claimed';
 

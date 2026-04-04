@@ -5,8 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { businessRepository } from '@/infrastructure';
-import { businessRoutes } from '@/shared/lib/routes';
-import { slugify } from '@koalacards/loyalty';
+import { businessPortalRoutes, slugify } from '@koalacards/loyalty';
 
 export function useOnboardingForm() {
     const router = useRouter();
@@ -21,7 +20,7 @@ export function useOnboardingForm() {
             });
         },
         onSuccess: () => {
-            router.push(businessRoutes.dashboard);
+            router.push(businessPortalRoutes.dashboard);
         },
     });
 

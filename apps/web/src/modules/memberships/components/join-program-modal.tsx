@@ -3,18 +3,19 @@
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
-import { Button } from '@/shared/components/ui/button';
-import { MembershipCardPreview } from '@/shared/components/wallets/membership-card-preview';
+import { Button } from '@koalacards/shared/ui';
 import { useJoinProgram } from '@/modules/memberships/hooks/useJoinProgram';
 import { useHasMembershipByProgramPublicId } from '@/modules/memberships/hooks/useHasMembershipByProgramPublicId';
-import { useAuthSession } from '@/shared/hooks/useAuthSession';
 import { ShowQRToStaffModal } from '@/modules/memberships/components/show-qr-to-staff-modal';
+import { authRepository } from '@/infrastructure';
 import {
     JoinProgramQRData,
     LoyaltyProgramType,
+    MembershipCardPreview,
     MembershipWithProgram,
     ProgramSnapshot,
 } from '@koalacards/loyalty';
+import { useUser } from '@koalacards/shared/hooks/useUser';
 
 const spring = { type: 'spring' as const, stiffness: 400, damping: 30 };
 
@@ -54,7 +55,7 @@ export function JoinProgramModal({
     onJoinSuccess,
 }: JoinProgramModalProps) {
     const queryClient = useQueryClient();
-    const { user } = useAuthSession();
+    const { user } = useUser({ authRepository });
     const { hasMembership, isFetched } = useHasMembershipByProgramPublicId(
         data.programPublicId,
         user?.id

@@ -3,8 +3,8 @@ import { Inter } from 'next/font/google';
 import { QueryProvider } from '@/app/_providers/query-provider';
 import { ThemeProvider } from '@/app/_providers/theme-provider';
 import { cn } from '@/shared/lib/utils';
-import './globals.css';
 import localFont from 'next/font/local';
+import './globals.css';
 
 const APP_NAME = 'KoalaRewards';
 const APP_DESCRIPTION = 'Tus tarjetas de fidelidad en un solo lugar';

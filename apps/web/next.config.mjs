@@ -2,62 +2,54 @@ import withPWAInit from '@ducanh2912/next-pwa';
 
 const withPWA = withPWAInit({
     dest: 'public',
-    disable: false,
+    disable: process.env.NODE_ENV === 'development',
     cacheStartUrl: true,
     dynamicStartUrl: false,
     extendDefaultRuntimeCaching: true,
     workboxOptions: {
         runtimeCaching: [
             {
+                // Supabase → NO cachear agresivamente
                 urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
-                handler: 'NetworkFirst',
-                options: {
-                    cacheName: 'supabase-api-cache',
-                    expiration: {
-                        maxEntries: 100,
-                        maxAgeSeconds: 60 * 60 * 24 * 7,
-                    },
-                    networkTimeoutSeconds: 10,
-                    cacheableResponse: {
-                        statuses: [0, 200],
-                    },
-                },
+                handler: 'NetworkOnly',
             },
             {
-                urlPattern: /^https?:\/\/[^/]*\/api\/.*/i,
-                handler: 'NetworkFirst',
+                // APIs públicas seguras
+                urlPattern: ({ url, request }) =>
+                    url.pathname.startsWith('/api/public') &&
+                    request.method === 'GET',
+                handler: 'StaleWhileRevalidate',
                 options: {
-                    cacheName: 'app-api-cache',
+                    cacheName: 'public-api-cache',
                     expiration: {
                         maxEntries: 50,
-                        maxAgeSeconds: 60 * 60 * 24,
-                    },
-                    networkTimeoutSeconds: 10,
-                    cacheableResponse: {
-                        statuses: [0, 200],
+                        maxAgeSeconds: 60 * 60, // 1h
                     },
                 },
             },
             {
-                urlPattern: ({ request }) => request.mode === "navigate",
-                handler: "NetworkFirst",
+                // navegación
+                urlPattern: ({ request }) => request.mode === 'navigate',
+                handler: 'NetworkFirst',
                 options: {
-                    cacheName: "pages-cache",
-                    networkTimeoutSeconds: 3,
+                    cacheName: 'pages-cache',
+                    networkTimeoutSeconds: 5,
                     expiration: {
                         maxEntries: 200,
                         maxAgeSeconds: 60 * 60 * 24 * 30,
                     },
-                    cacheableResponse: {
-                        statuses: [0, 200],
-                    },
                 },
-            }
+            },
         ],
     },
 });
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+    transpilePackages: [
+        '@koalacards/shared/ui',
+        '@koalacards/loyalty',
+    ],
+}
 
 export default withPWA(nextConfig);

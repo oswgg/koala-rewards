@@ -5,3 +5,5 @@ export * from './loyalty-program';
 export * from './membership';
 export * from './profile';
 export * from './user';
+
+export * from './staff';

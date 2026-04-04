@@ -9,7 +9,7 @@ import {
     SheetHeader,
     SheetTitle,
     SheetDescription,
-} from '@/shared/components/ui/sheet';
+} from '@koalacards/shared/ui';
 import { JoinProgramQRData, parseProgramQR } from '@koalacards/loyalty';
 
 const SCANNER_ELEMENT_ID = 'join-program-qr-scanner';

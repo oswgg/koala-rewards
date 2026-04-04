@@ -3,10 +3,15 @@
 import { Gift, X } from 'lucide-react';
 import { motion } from 'motion/react';
 import QRCode from 'react-qr-code';
-import { PointsDisplay } from './points-display';
-import { CashbackDisplay } from './cashback-display';
-import { CARD_THEMES, CardTheme, isRewardReady, LoyaltyProgramType } from '@koalacards/loyalty';
-import { StampsDisplay } from './stamps-display';
+import {
+    CARD_THEMES,
+    CardTheme,
+    CashbackDisplay,
+    isRewardReady,
+    LoyaltyProgramType,
+    PointsDisplay,
+    StampsDisplay,
+} from '@koalacards/loyalty';
 
 export const typeConfig: Record<LoyaltyProgramType, { label: string }> = {
     stamps: { label: 'Tarjeta de sellos' },

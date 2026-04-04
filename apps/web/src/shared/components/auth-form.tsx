@@ -4,10 +4,15 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthForm } from '@/hooks/useAuthForm';
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/ui/button';
-import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/ui/field';
-import { Input } from '@/ui/input';
-import { OtpPinInput } from '@/ui/otp-pin-input';
+import {
+    Button,
+    Field,
+    FieldDescription,
+    FieldGroup,
+    FieldLabel,
+    Input,
+    OtpPinInput,
+} from '@koalacards/shared/ui';
 
 export interface AuthFormProps {
     type: 'signup' | 'login';
@@ -203,8 +208,7 @@ function AuthFormContent({
                                     disabled={
                                         isPending ||
                                         !email.trim() ||
-                                        (authType === 'signup' &&
-                                            (!name.trim() || !phone.trim()))
+                                        (authType === 'signup' && (!name.trim() || !phone.trim()))
                                     }
                                 >
                                     {emailStepButtonLoadingLabel}

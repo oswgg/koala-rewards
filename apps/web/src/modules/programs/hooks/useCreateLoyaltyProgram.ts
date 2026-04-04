@@ -1,14 +1,12 @@
 import { useAppForm } from '@/infrastructure/tanstack-form/form-context';
-import { businessRoutes } from '@/shared/lib/routes';
 import { formOptions, revalidateLogic } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { z } from 'zod';
-import { programsQueryKey } from './usePrograms';
 import { queryClient } from '@/shared/lib/query-client';
 import { programsRepository } from '@/infrastructure';
-import { CreateProgramInput } from '@koalacards/loyalty';
+import { businessPortalRoutes, CreateProgramInput, programsQueryKey } from '@koalacards/loyalty';
 
 type Step = 'type' | 'details' | 'confirm';
 
@@ -83,7 +81,7 @@ export function useCreateLoyaltyProgram() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: programsQueryKey });
-            router.push(businessRoutes.programs);
+            router.push(businessPortalRoutes.programs);
         },
     });
 

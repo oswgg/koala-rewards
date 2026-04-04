@@ -1,6 +1,6 @@
 'use client';
 
-import { businessRoutes } from '@/shared/lib/routes';
+import { businessPortalRoutes } from '@koalacards/loyalty';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 
@@ -11,7 +11,7 @@ export function CreateNewProgramButton() {
     return (
         <div className="flex flex-col items-center gap-2">
             <Link
-                href={businessRoutes.newProgram}
+                href={businessPortalRoutes.newProgram}
                 style={{
                     width: CARD_WIDTH,
                     aspectRatio: CARD_ASPECT,

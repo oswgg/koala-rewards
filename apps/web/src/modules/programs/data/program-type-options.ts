@@ -1,5 +1,5 @@
-import type { FormRadioGroupOption } from '@/shared/components/form-radio-group';
 import { LoyaltyProgramType } from '@koalacards/loyalty';
+import { FormRadioGroupOption } from '@koalacards/shared/ui';
 
 export const programTypeOptions: FormRadioGroupOption<LoyaltyProgramType>[] = [
     {

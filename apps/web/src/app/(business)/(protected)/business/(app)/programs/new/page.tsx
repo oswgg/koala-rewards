@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@/ui/button';
 import { useCreateLoyaltyProgram } from '@/modules/programs/hooks/useCreateLoyaltyProgram';
 import { TypeSelect } from '@/modules/programs/components/new/steps/type-select';
 import { DetailInfo } from '@/modules/programs/components/new/steps/detail-info';

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Copy } from 'lucide-react';
 
-import { Button } from '@/shared/components/ui/button';
+import { Button } from '@koalacards/shared/ui';
 import { cn } from '@/shared/lib/utils';
 import Link from 'next/link';
 import {

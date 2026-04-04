@@ -1,10 +1,10 @@
 import { redirect } from 'next/navigation';
-import { getServerAuthRepository } from '@/shared/lib/auth';
-import { customerRoutes } from '@/shared/lib/routes';
+import { getServerAuthRepository } from '@/shared/lib/server-auth';
+import { customerPortalRoutes } from '@koalacards/loyalty';
 
 export async function AuthGuard({
     children,
-    redirectTo = customerRoutes.login,
+    redirectTo = customerPortalRoutes.login,
 }: {
     children: React.ReactNode;
     redirectTo?: string;

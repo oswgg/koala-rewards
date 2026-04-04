@@ -3,12 +3,12 @@
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { AuthForm } from '@/shared/components/auth-form';
-import { customerRoutes } from '@/shared/lib/routes';
+import { customerPortalRoutes } from '@koalacards/loyalty';
 
 function LoginContent() {
     const searchParams = useSearchParams();
     const returnUrl = searchParams.get('returnUrl');
-    const redirectTo = returnUrl ? decodeURIComponent(returnUrl) : customerRoutes.app;
+    const redirectTo = returnUrl ? decodeURIComponent(returnUrl) : customerPortalRoutes.app;
 
     return (
         <div className="flex min-h-svh flex-col items-center p-6 pt-24 gap-6 bg-background">
@@ -18,11 +18,11 @@ function LoginContent() {
                     redirectTo={redirectTo}
                     redirectOnChange={{
                         login: returnUrl
-                            ? `${customerRoutes.login}?returnUrl=${encodeURIComponent(returnUrl)}`
-                            : customerRoutes.login,
+                            ? `${customerPortalRoutes.login}?returnUrl=${encodeURIComponent(returnUrl)}`
+                            : customerPortalRoutes.login,
                         signup: returnUrl
-                            ? `${customerRoutes.signup}?returnUrl=${encodeURIComponent(returnUrl)}`
-                            : customerRoutes.signup,
+                            ? `${customerPortalRoutes.signup}?returnUrl=${encodeURIComponent(returnUrl)}`
+                            : customerPortalRoutes.signup,
                     }}
                 />
             </div>

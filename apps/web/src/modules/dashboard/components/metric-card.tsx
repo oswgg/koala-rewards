@@ -1,7 +1,7 @@
 import { TrendingDown, TrendingUp } from 'lucide-react';
 
 import { cn } from '@/shared/lib/utils';
-import { Card, CardContent, CardHeader } from '@/ui/card';
+import { Card, CardContent, CardHeader } from '@koalacards/shared/ui';
 
 export interface MetricCardProps {
     title: string;

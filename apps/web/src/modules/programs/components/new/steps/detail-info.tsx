@@ -1,9 +1,6 @@
 import { useTypedAppFormContext } from '@/infrastructure/tanstack-form/form-context';
 import { createProgramFormOptions } from '@/modules/programs/hooks/useCreateLoyaltyProgram';
-import { SwitchDescription } from '@/shared/components/switch-description';
-import { Button } from '@/shared/components/ui/button';
-import { FieldLabel } from '@/shared/components/ui/field';
-import { Input } from '@/shared/components/ui/input';
+import { Button, FieldLabel, Input, SwitchDescription } from '@koalacards/shared/ui';
 
 interface DetailInfoProps {
     prevStep: () => void;

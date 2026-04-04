@@ -39,6 +39,13 @@ export class AuthRepositoryImpl implements AuthRepository {
         return await this.remote.isBusinessStaff(user.id);
     }
 
+    async getStaffData() {
+        const user = await this.getCurrentUser();
+        if (!user) return null;
+
+        return await this.remote.getStaffData(user.id);
+    }
+
     async signOut(): Promise<void> {
         await this.remote.signOut();
     }

@@ -5,15 +5,13 @@ import { useRouter } from 'next/navigation';
 import { AlertDialog } from 'radix-ui';
 import { CircleUser, CreditCard, LogOut, Plus, Bell } from 'lucide-react';
 import { authRepository } from '@/infrastructure';
-import { customerRoutes } from '@/shared/lib/routes';
-import { Button } from '@/shared/components/ui/button';
+import { Button } from '@koalacards/shared/ui';
 import { CardWallet } from '@/shared/components/wallets/card-wallet';
-import { CardWalletSkeleton } from '@/shared/components/wallets/card-wallet-skeleton';
 import { JoinProgramScanner } from './join-program-scanner';
 import { JoinProgramModal } from './join-program-modal';
 import { useWalletCards } from '../hooks/useWalletCards';
 import { cn } from '@/shared/lib/utils';
-import { JoinProgramQRData } from '@koalacards/loyalty';
+import { CardWalletSkeleton, customerPortalRoutes, JoinProgramQRData } from '@koalacards/loyalty';
 
 export interface CustomerWalletViewProps {
     /** Join data from ?j= query param (when user enters via URL) */
@@ -50,7 +48,7 @@ export function CustomerWalletView({
     const handleSignOut = async () => {
         setLogoutOpen(false);
         await authRepository.signOut();
-        router.push(customerRoutes.login);
+        router.push(customerPortalRoutes.login);
     };
 
     return (

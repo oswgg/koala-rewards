@@ -1,14 +1,20 @@
 {
-  "name": "koalacards",
-  "version": "0.0.1",
-  "private": true,
-  "workspaces": ["apps/*", "packages/*"],
-  "scripts": {
-    "dev": "bun run --filter @koalacards/web dev",
-    "build": "bun run --filter @koalacards/web build",
-    "start": "bun run --filter @koalacards/web start",
-    "typecheck": "bun run --filter '*' typecheck",
-    "lint": "bun run --filter @koalacards/web lint",
-    "format": "bun run --filter @koalacards/web format"
-  }
+    "name": "koalacards",
+    "version": "0.0.1",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "dev:web": "bun run --filter @koalacards/web dev",
+        "build:web": "bun run --filter @koalacards/web build",
+        "start:web": "bun run --filter @koalacards/web start",
+        "dev:scanner": "bun run --filter @koalacards/scanner dev",
+        "build:scanner": "bun run --filter @koalacards/scanner build",
+        "start:scanner": "bun run --filter @koalacards/scanner start",
+        "shadcn:add:ui": "bunx --bun shadcn@latest add -c packages/ui",
+        "shadcn:add:web": "bunx --bun shadcn@latest add -c apps/web",
+        "typecheck": "bun run --filter '*' typecheck"
+    }
 }

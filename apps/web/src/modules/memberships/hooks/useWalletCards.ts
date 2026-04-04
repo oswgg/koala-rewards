@@ -1,17 +1,18 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useUser } from '@/shared/hooks/useUser';
 import { useUserMemberships } from './useUserMemberships';
 import { useMembershipsRealtime } from './useMembershipsRealtime';
 import { fireCelebrationConfetti } from '@/shared/lib/confetti';
 import { MembershipWithProgram } from '@koalacards/loyalty';
+import { authRepository } from '@/infrastructure';
+import { useUser } from '@koalacards/shared/hooks/useUser';
 
 const NEWLY_ADDED_BADGE_DURATION_MS = 5000;
 const BALANCE_CHANGED_ANIMATION_MS = 2000;
 
 export function useWalletCards() {
     const queryClient = useQueryClient();
-    const { user, isLoading: isUserLoading } = useUser();
+    const { user, isLoading: isUserLoading } = useUser({ authRepository });
 
     const [balanceChangedId, setBalanceChangedId] = useState<string | null>(null);
     const [newlyAdded, setNewlyAdded] = useState<MembershipWithProgram | null>(null);

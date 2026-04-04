@@ -5,7 +5,7 @@ import { QrCode } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { MemberShipCardDetailView } from '@/shared/components/wallets/mermbership-card-detail';
 import { getAppBaseUrlForQr } from '@/shared/lib/qr-data';
-import { Button } from '@/shared/components/ui/button';
+import { Button } from '@koalacards/shared/ui';
 import { buildCustomerScanUrl, getCardTheme, MembershipWithProgram } from '@koalacards/loyalty';
 
 const spring = { type: 'spring' as const, stiffness: 400, damping: 30 };

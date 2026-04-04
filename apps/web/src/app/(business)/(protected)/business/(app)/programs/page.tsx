@@ -5,10 +5,13 @@ import {
     ProgramCardPreview,
     ProgramCardPreviewSkeleton,
 } from '@/modules/programs/components/program-card-preview';
-import { usePrograms } from '@/modules/programs/hooks/usePrograms';
+import { usePrograms, UseProgramsResult } from '@koalacards/loyalty';
+import { programsRepository } from '@/infrastructure';
 
 export default function ProgramsPage() {
-    const { programs, isLoading, isError, error } = usePrograms();
+    const { programs, isLoading, isError, error }: UseProgramsResult = usePrograms({
+        programsRepository,
+    });
 
     if (isLoading)
         return (
@@ -45,11 +48,11 @@ export default function ProgramsPage() {
                 {programs
                     .filter((p) => p.is_active)
                     .map((program) => (
-                        <div key={program.id} className="min-w-[360px]">
+                        <div key={program.id} className="min-w-90">
                             <ProgramCardPreview program={program} />
                         </div>
                     ))}
-                <div className="w-[280px]">
+                <div className="w-70">
                     <CreateNewProgramButton />
                 </div>
             </div>

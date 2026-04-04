@@ -1,4 +1,4 @@
-import { User } from '@koalacards/loyalty/core/domain/types/user';
+import { User, Staff } from '@koalacards/loyalty/core/domain/types/index';
 
 export interface RemoteAuthDataSource {
     createUser: (email: string, name: string, phoneNumber: string) => Promise<void>;
@@ -6,5 +6,6 @@ export interface RemoteAuthDataSource {
     verifyOtp: (email: string, code: string) => Promise<User>;
     isBusinessOwner: (userId: any) => Promise<boolean>;
     isBusinessStaff: (userId: any) => Promise<boolean>;
+    getStaffData: (userId: any) => Promise<Staff | null>;
     signOut: () => Promise<void>;
 }

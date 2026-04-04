@@ -3,8 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { authRepository } from '@/infrastructure';
-import { businessRoutes } from '@/shared/lib/routes';
-import { User } from '@koalacards/loyalty';
+import { businessPortalRoutes, User } from '@koalacards/loyalty';
 
 export type AuthFormStep = 'email' | 'otp';
 export type AuthFormType = 'signup' | 'login';
@@ -43,7 +42,7 @@ export interface UseAuthFormReturn {
 
 export function useAuthForm({
     type,
-    redirectTo = businessRoutes.dashboard,
+    redirectTo = businessPortalRoutes.dashboard,
     onSuccess,
 }: UseAuthFormProps): UseAuthFormReturn {
     const router = useRouter();

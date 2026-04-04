@@ -2,9 +2,14 @@
 
 import { useOnboardingForm } from '@/modules/business-auth/onboarding/hooks/useOnboardingForm';
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/ui/button';
-import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/ui/field';
-import { Input } from '@/ui/input';
+import {
+    Button,
+    Field,
+    FieldDescription,
+    FieldGroup,
+    FieldLabel,
+    Input,
+} from '@koalacards/shared/ui';
 
 export function OnboardingForm({ className, ...props }: React.ComponentProps<'div'>) {
     const { name, setName, handleSubmit, createBusinessMutation } = useOnboardingForm();

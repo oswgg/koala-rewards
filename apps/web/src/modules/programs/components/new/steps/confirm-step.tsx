@@ -2,8 +2,7 @@
 
 import { useTypedAppFormContext } from '@/infrastructure/tanstack-form/form-context';
 import { createProgramFormOptions } from '@/modules/programs/hooks/useCreateLoyaltyProgram';
-import { Button } from '@/shared/components/ui/button';
-import { FieldLabel } from '@/shared/components/ui/field';
+import { Button, FieldLabel } from '@koalacards/shared/ui';
 import { MemberShipCardDetailView } from '@/shared/components/wallets/mermbership-card-detail';
 import {
     buildProgramJoinUrl,
