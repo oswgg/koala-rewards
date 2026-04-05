@@ -1,6 +1,6 @@
 'use client';
 
-import { CardTheme } from '@vado/loyalty';
+import { CardTheme } from '@vado/loyalty/core';
 import { Star } from 'lucide-react';
 import { motion } from 'motion/react';
 

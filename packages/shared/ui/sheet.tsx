@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Dialog } from 'radix-ui';
 import { X } from 'lucide-react';
 
-import { cn } from '@vado/shared/lib/ui-utils';
+import { cn } from '@vado/shared/lib';
 
 const Sheet = Dialog.Root;
 const SheetTrigger = Dialog.Trigger;

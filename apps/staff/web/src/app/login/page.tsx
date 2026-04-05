@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import { authRepository } from '@/infrastructure';
 import { AuthForm } from '@/components/auth-form';
-import { useUser } from '@vado/shared/hooks/useUser';
+import { useUser } from '@vado/shared/hooks';
 
 export default function LoginPage() {
     const router = useRouter();

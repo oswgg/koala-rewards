@@ -10,7 +10,7 @@ import { ActivityByQrFlow } from '@/components/activity-by-qr-flow';
 import { ActivityMethodSection } from '@/components/activity-method-section';
 import { NewCustomerSection } from '@/components/new-customer-section/new-customer-section';
 import { SelectingActionSection } from '@/components/selecting-action-section';
-import { useUser } from '@vado/shared/hooks/useUser';
+import { useUser } from '@vado/shared/hooks';
 
 type Action =
     | 'selecting'

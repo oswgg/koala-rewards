@@ -1,11 +1,11 @@
-import { utcDayBoundsIso } from '@vado/loyalty/core/domain/activities/earn-limit';
-import { StoredLoyaltyProgram } from '@vado/loyalty/core/domain/types/loyalty-program';
 import {
     MembershipWithProgram,
     ProgramMembership,
-} from '@vado/loyalty/core/domain/types/membership';
+    StoredLoyaltyProgram,
+    utcDayBoundsIso,
+    getProfileIdByAuthUserId,
+} from '@vado/loyalty/core';
 import { RemoteMembershipDataSource } from './memberships.remote.datasource.interface';
-import { getProfileIdByAuthUserId } from '@vado/loyalty/core/lib/resolve-profile-id';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 const MEMBERSHIP_WITH_PROGRAM_AND_BUSINESS = `

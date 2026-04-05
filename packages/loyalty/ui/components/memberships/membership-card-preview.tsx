@@ -3,7 +3,7 @@
 import { motion } from 'motion/react';
 import { Gift } from 'lucide-react';
 
-import { getCardTheme, isRewardReady, LoyaltyProgramType, CardTheme } from '@vado/loyalty';
+import { getCardTheme, isRewardReady, LoyaltyProgramType, CardTheme } from '@vado/loyalty/core';
 import { CashbackDisplay, PointsDisplay, StampsDisplay } from '@vado/loyalty/ui';
 
 export const CARD_HEIGHT = 275;

@@ -12,8 +12,7 @@ import { profilesRepository, membershipRepository, programsRepository } from '@/
 import { Button, FormRadioGroup, Input, Label, cn } from '@vado/shared/ui';
 import type { ProfileByContact } from '@vado/loyalty';
 import { MembershipCardPreview } from '@vado/loyalty/ui/components';
-import { useMembershipByClientId } from '@vado/loyalty/hooks/memberships/useMembershipByClientId';
-import { usePrograms, UseProgramsResult } from '@vado/loyalty/hooks/programs/usePrograms';
+import { usePrograms, UseProgramsResult, useMembershipByClientId } from '@vado/loyalty/hooks';
 
 type Step = 'phone' | 'select-program' | 'activity';
 

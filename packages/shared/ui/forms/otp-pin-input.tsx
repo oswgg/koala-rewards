@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Input } from './input';
-import { cn } from '@vado/shared/lib/ui-utils';
+import { cn } from '@vado/shared/lib';
 const OTP_LENGTH = 6;
 
 export interface OtpPinInputProps extends Omit<

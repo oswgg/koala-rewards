@@ -5,7 +5,7 @@ import { useMembershipsRealtime } from './useMembershipsRealtime';
 import { fireCelebrationConfetti } from '@/shared/lib/confetti';
 import { MembershipWithProgram } from '@vado/loyalty';
 import { authRepository } from '@/infrastructure';
-import { useUser } from '@vado/shared/hooks/useUser';
+import { useUser } from '@vado/shared/hooks';
 
 const NEWLY_ADDED_BADGE_DURATION_MS = 5000;
 const BALANCE_CHANGED_ANIMATION_MS = 2000;

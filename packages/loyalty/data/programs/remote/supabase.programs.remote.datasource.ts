@@ -1,7 +1,4 @@
-import {
-    CreateProgramInput,
-    StoredLoyaltyProgram,
-} from '@vado/loyalty/core/domain/types/loyalty-program';
+import { CreateProgramInput, StoredLoyaltyProgram } from '@vado/loyalty/core';
 import { ProgramsRemoteDataSource } from './programs.remote.datasource.interface';
 import { SupabaseClient } from '@supabase/supabase-js';
 

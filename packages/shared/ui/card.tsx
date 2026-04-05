@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { cn } from '@vado/shared/lib/ui-utils';
+import { cn } from '@vado/shared/lib';
 
 function Card({ className, ...props }: React.ComponentProps<'div'>) {
     return (

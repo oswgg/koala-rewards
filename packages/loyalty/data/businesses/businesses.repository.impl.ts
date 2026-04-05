@@ -1,4 +1,4 @@
-import { Business, CreateBusinessInput } from '@vado/loyalty/core/domain/types/business';
+import { Business, CreateBusinessInput } from '@vado/loyalty/core';
 import { BusinessesRemoteDataSource } from './remote/businesses.remote.datasource.interface';
 import { BusinessesRepository } from '@vado/loyalty';
 

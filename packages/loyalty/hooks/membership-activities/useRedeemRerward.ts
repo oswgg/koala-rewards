@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { MembershipActivitiesRepository, RegisterRedeemActivityInput } from '@vado/loyalty';
+import { MembershipActivitiesRepository, RegisterRedeemActivityInput } from '@vado/loyalty/core';
 
 export interface UseRedeemRewardProps {
     membershipActivitiesRepository: MembershipActivitiesRepository;

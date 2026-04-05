@@ -1,4 +1,4 @@
-import type { LocalMembership } from '@vado/loyalty/core/domain/types/membership';
+import type { LocalMembership } from '@vado/loyalty/core';
 
 export interface LocalMembershipDataSource {
     save(membership: LocalMembership): Promise<LocalMembership>;

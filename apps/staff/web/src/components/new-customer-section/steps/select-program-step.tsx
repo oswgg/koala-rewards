@@ -7,10 +7,7 @@ import { programsRepository } from '@/infrastructure/programs';
 import { useTypedAppFormContext } from '@/infrastructure/tanstack-form/form-context';
 
 import { FormCheckboxGroup } from '@vado/shared/ui';
-import {
-    type UseProgramsResult,
-    usePrograms,
-} from '@vado/loyalty/hooks/programs/usePrograms';
+import { type UseProgramsResult, usePrograms } from '@vado/loyalty/hooks';
 
 export function SelectProgramStep() {
     const form = useTypedAppFormContext(newCustomerFormOptions);

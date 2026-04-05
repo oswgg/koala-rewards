@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { RadioGroup as RadioGroupPrimitive } from 'radix-ui';
-import { cn } from '@vado/shared/lib/ui-utils';
+import { cn } from '@vado/shared/lib';
 
 function RadioGroup({
     className,

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { MembershipActivitiesRepository, RegisterEarnActivityInput } from '@vado/loyalty';
+import { MembershipActivitiesRepository, RegisterEarnActivityInput } from '@vado/loyalty/core';
 import { earnTodayQueryKey } from '../memberships';
 
 export interface UseRegisterActivityProps {

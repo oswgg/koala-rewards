@@ -12,7 +12,7 @@ import { ScanFlowStickyHeader } from './scan-flow-sticky-header';
 import { Button, cn } from '@vado/shared/ui';
 import { CustomerQRData, parseCustomerQR } from '@vado/loyalty';
 import { scannerPortalRoutes } from '@vado/loyalty/ui';
-import { useUser } from '@vado/shared/hooks/useUser';
+import { useUser } from '@vado/shared/hooks';
 
 const SCANNER_ELEMENT_ID = 'scan-membership-qr';
 

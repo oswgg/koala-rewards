@@ -47,9 +47,10 @@ const withPWA = withPWAInit({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     transpilePackages: [
-        '@vado/shared/ui',
+        '@vado/shared',
         '@vado/loyalty',
     ],
+    turbopack: {}
 }
 
 export default withPWA(nextConfig);

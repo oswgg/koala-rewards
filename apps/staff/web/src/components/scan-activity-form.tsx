@@ -23,12 +23,10 @@ import { scannerPortalRoutes } from '@vado/loyalty/ui/routes';
 import {
     useEarnLimitToday,
     useMembershipByClientId,
-} from '@vado/loyalty/hooks/memberships/index';
-import {
     useRegisterActivity,
     useRedeemReward,
-} from '@vado/loyalty/hooks/membership-activities/index';
-import { useStaff } from '@vado/shared/hooks/useStaff';
+} from '@vado/loyalty/hooks';
+import { useStaff } from '@vado/shared/hooks';
 
 interface ScanActivityFormProps {
     programPublicId: string;

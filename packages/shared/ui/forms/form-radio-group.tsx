@@ -3,7 +3,7 @@
 import * as React from 'react';
 
 import { RadioGroup, RadioGroupItem } from './radio-group';
-import { cn } from '@vado/shared/lib/ui-utils';
+import { cn } from '@vado/shared/lib';
 
 export interface FormRadioGroupOption<T extends string = string> {
     value: T;

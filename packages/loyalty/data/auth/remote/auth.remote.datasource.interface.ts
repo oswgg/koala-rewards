@@ -1,4 +1,4 @@
-import { User, Staff } from '@vado/loyalty/core/domain/types/index';
+import { User, Staff } from '@vado/loyalty/core';
 
 export interface RemoteAuthDataSource {
     createUser: (email: string, name: string, phoneNumber: string) => Promise<void>;

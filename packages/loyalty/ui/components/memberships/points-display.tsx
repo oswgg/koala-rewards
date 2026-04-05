@@ -1,6 +1,6 @@
 'use client';
 
-import { CardTheme } from '@vado/loyalty';
+import { CardTheme } from '@vado/loyalty/core';
 import { motion } from 'motion/react';
 
 export function PointsDisplay({

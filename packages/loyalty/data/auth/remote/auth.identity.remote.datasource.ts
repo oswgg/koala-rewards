@@ -1,4 +1,4 @@
-import type { User } from '@vado/loyalty/core/domain/types/user';
+import type { User } from '@vado/loyalty/core';
 
 export interface AuthIdentityRemoteDatasource {
     getCurrentUser(): Promise<User | null>;

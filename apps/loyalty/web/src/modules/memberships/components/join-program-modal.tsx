@@ -15,7 +15,7 @@ import {
     MembershipWithProgram,
     ProgramSnapshot,
 } from '@vado/loyalty';
-import { useUser } from '@vado/shared/hooks/useUser';
+import { useUser } from '@vado/shared/hooks';
 
 const spring = { type: 'spring' as const, stiffness: 400, damping: 30 };
 

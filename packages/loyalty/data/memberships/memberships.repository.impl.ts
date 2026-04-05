@@ -3,11 +3,12 @@ import {
     MembershipWithProgram,
     ProgramMembership,
     ProgramSnapshot,
-} from '@vado/loyalty/core/domain/types/membership';
-import { Business } from '@vado/loyalty/core/domain/types/business';
+    Business,
+    JoinProgramResult,
+    MembershipsRepository,
+} from '@vado/loyalty/core';
 import { LocalMembershipDataSource } from './local/memberships.local.datasource.interface';
 import { RemoteMembershipDataSource } from './remote/memberships.remote.datasource.interface';
-import { JoinProgramResult, MembershipsRepository } from '@vado/loyalty';
 
 function toBusiness(b: ProgramSnapshot['business'], fallbackCreatedAt: string): Business {
     return {

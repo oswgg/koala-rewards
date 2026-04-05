@@ -1,7 +1,4 @@
-import type {
-    MembershipWithProgram,
-    ProgramMembership,
-} from '@vado/loyalty/core/domain/types/membership';
+import type { MembershipWithProgram, ProgramMembership } from '@vado/loyalty/core';
 
 export interface RemoteMembershipDataSource {
     create(programId: string, userId: string): Promise<ProgramMembership>;
