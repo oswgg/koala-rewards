@@ -1,5 +1,4 @@
-import { User } from '@koalacards/loyalty/core/domain/types/user';
-import { toUser } from '@koalacards/loyalty/core/lib/user-mapper';
+import { User, Staff, toUser } from '@vado/loyalty/core';
 import { RemoteAuthDataSource } from './auth.remote.datasource.interface';
 import { isAuthApiError, SupabaseClient } from '@supabase/supabase-js';
 
@@ -70,6 +69,28 @@ export class SupabaseRemoteAuthDataSource implements RemoteAuthDataSource {
 
         if (error) throw error;
         return Boolean(data);
+    }
+
+    async getStaffData(userId: any): Promise<Staff | null> {
+        const { data, error } = await this.supabase
+            .from('staff')
+            .select('id, business_id, type, name, email')
+            .eq('user_id', userId)
+            .eq('active', true)
+            .limit(1)
+            .maybeSingle();
+
+        if (error) throw error;
+        return data
+            ? {
+                  id: data.id,
+                  business_id: data.business_id,
+                  user_id: userId,
+                  type: data.type,
+                  name: data.name,
+                  email: data.email,
+              }
+            : null;
     }
 
     async signOut(): Promise<void> {

@@ -19,7 +19,7 @@ Estructura base del monorepo:
 
 - `apps/`: aplicaciones ejecutables (frontend, backend, mobile, desktop, etc.).
 - `packages/`: librerias compartidas y reutilizables entre apps.
-- `packages/loyalty`: paquete unificado que contiene logica de negocio y acceso a datos (`@koalacards/loyalty`).
+- `packages/loyalty`: paquete unificado que contiene logica de negocio y acceso a datos (`@vado/loyalty`).
 
 ## Workspaces
 

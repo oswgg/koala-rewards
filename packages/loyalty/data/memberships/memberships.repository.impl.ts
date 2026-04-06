@@ -3,14 +3,12 @@ import {
     MembershipWithProgram,
     ProgramMembership,
     ProgramSnapshot,
-} from '@koalacards/loyalty/core/domain/types/membership';
-import { Business } from '@koalacards/loyalty/core/domain/types/business';
-import { LocalMembershipDataSource } from './local/memberships.local.datasource.interface';
-import { RemoteMembershipDataSource } from './remote/memberships.remote.datasource.interface';
-import {
+    Business,
     JoinProgramResult,
     MembershipsRepository,
-} from '@koalacards/loyalty/core/domain/repositories/memberships.repo.interface';
+} from '@vado/loyalty/core';
+import { LocalMembershipDataSource } from './local/memberships.local.datasource.interface';
+import { RemoteMembershipDataSource } from './remote/memberships.remote.datasource.interface';
 
 function toBusiness(b: ProgramSnapshot['business'], fallbackCreatedAt: string): Business {
     return {

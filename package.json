@@ -1,14 +1,19 @@
 {
-  "name": "koalacards",
-  "version": "0.0.1",
-  "private": true,
-  "workspaces": ["apps/*", "packages/*"],
-  "scripts": {
-    "dev": "bun run --filter @koalacards/web dev",
-    "build": "bun run --filter @koalacards/web build",
-    "start": "bun run --filter @koalacards/web start",
-    "typecheck": "bun run --filter '*' typecheck",
-    "lint": "bun run --filter @koalacards/web lint",
-    "format": "bun run --filter @koalacards/web format"
-  }
+    "name": "vado",
+    "version": "0.0.1",
+    "private": true,
+    "workspaces": [
+        "apps/**",
+        "packages/*"
+    ],
+    "scripts": {
+        "dev:loyalty:web": "bun run --filter @vado/loyaltyweb dev",
+        "build:loyalty:web": "bun run --filter @vado/loyaltyweb build",
+        "start:loyalty:web": "bun run --filter @vado/loyaltyweb start",
+        "dev:staff:web": "bun run --filter @vado/staffweb dev",
+        "build:staff:web": "bun run --filter @vado/staffweb build",
+        "start:staff:web": "bun run --filter @vado/staffweb start",
+        "shadcn:add:ui": "bunx --bun shadcn@latest add -c packages/ui",
+        "typecheck": "bun run --filter '*' typecheck"
+    }
 }

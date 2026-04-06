@@ -1,7 +1,4 @@
-import {
-    CreateProfileAndMembershipsInput,
-    ProfileByContact,
-} from '@koalacards/loyalty/core/domain/types/profile';
+import { CreateProfileAndMembershipsInput, ProfileByContact } from '@vado/loyalty/core';
 
 export interface ProfilesRemoteDataSource {
     findProfileByContact(input: string): Promise<ProfileByContact | null>;

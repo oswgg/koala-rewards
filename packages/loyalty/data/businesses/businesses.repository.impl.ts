@@ -1,6 +1,6 @@
-import { Business, CreateBusinessInput } from '@koalacards/loyalty/core/domain/types/business';
+import { Business, CreateBusinessInput } from '@vado/loyalty/core';
 import { BusinessesRemoteDataSource } from './remote/businesses.remote.datasource.interface';
-import { BusinessesRepository } from '@koalacards/loyalty/core/domain/repositories/businesses.repo.interface';
+import { BusinessesRepository } from '@vado/loyalty';
 
 export class BusinessesRepositoryImpl implements BusinessesRepository {
     constructor(private readonly remote: BusinessesRemoteDataSource) {}

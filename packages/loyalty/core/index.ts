@@ -1,4 +1,4 @@
-// @koalacards/loyalty - Platform-agnostic business logic
+// @vado/loyalty - Platform-agnostic business logic
 // Lib
 export * from './lib/card-themes';
 export * from './lib/slug';

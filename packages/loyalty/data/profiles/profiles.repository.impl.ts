@@ -1,9 +1,9 @@
+import { ProfilesRemoteDataSource } from './remote/profiles.remote.datasource.interface';
 import {
     CreateProfileAndMembershipsInput,
     ProfileByContact,
-} from '@koalacards/loyalty/core/domain/types/profile';
-import { ProfilesRemoteDataSource } from './remote/profiles.remote.datasource.interface';
-import { ProfilesRepository } from '@koalacards/loyalty/core/domain/repositories/profiles.repo.interface';
+    ProfilesRepository,
+} from '@vado/loyalty/core';
 
 export class ProfilesRepositoryImpl implements ProfilesRepository {
     constructor(private readonly remote: ProfilesRemoteDataSource) {}
