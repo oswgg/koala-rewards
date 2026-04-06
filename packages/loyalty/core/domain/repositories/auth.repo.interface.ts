@@ -1,4 +1,4 @@
-import { User } from '../types';
+import { Staff, User } from '../types';
 
 export interface AuthRepository {
     createUser: (email: string, name: string, phoneNumber: string) => Promise<void>;
@@ -7,5 +7,6 @@ export interface AuthRepository {
     getCurrentUser: () => Promise<User | null>;
     isBusinessOwner: () => Promise<boolean>;
     isBusinessStaff: () => Promise<boolean>;
+    getStaffData: (userId: any) => Promise<Staff | null>;
     signOut: () => Promise<void>;
 }

@@ -1,9 +1,5 @@
-import {
-    CreateProgramInput,
-    StoredLoyaltyProgram,
-} from '@koalacards/loyalty/core/domain/types/loyalty-program';
 import { ProgramsRemoteDataSource } from './remote/programs.remote.datasource.interface';
-import { ProgramsRepository } from '@koalacards/loyalty/core/domain/repositories/programs.repo.interface';
+import { CreateProgramInput, StoredLoyaltyProgram, ProgramsRepository } from '@vado/loyalty/core';
 
 export class ProgramsRepositoryImpl implements ProgramsRepository {
     constructor(private readonly remote: ProgramsRemoteDataSource) {}

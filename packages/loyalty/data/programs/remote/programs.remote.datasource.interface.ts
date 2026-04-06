@@ -1,7 +1,4 @@
-import {
-    CreateProgramInput,
-    StoredLoyaltyProgram,
-} from '@koalacards/loyalty/core/domain/types/loyalty-program';
+import { CreateProgramInput, StoredLoyaltyProgram } from '@vado/loyalty/core';
 
 export interface ProgramsRemoteDataSource {
     create(program: CreateProgramInput): Promise<StoredLoyaltyProgram>;

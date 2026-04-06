@@ -1,7 +1,4 @@
-import {
-    CreateProfileAndMembershipsInput,
-    ProfileByContact,
-} from '@koalacards/loyalty/core/domain/types/profile';
+import { CreateProfileAndMembershipsInput, ProfileByContact } from '@vado/loyalty/core';
 import { ProfilesRemoteDataSource } from './profiles.remote.datasource.interface';
 import { SupabaseClient } from '@supabase/supabase-js';
 

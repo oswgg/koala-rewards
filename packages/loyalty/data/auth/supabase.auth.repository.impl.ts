@@ -1,6 +1,5 @@
-import { AuthRepository } from '@koalacards/loyalty/core/domain/repositories/auth.repo.interface';
+import { AuthRepository, User } from '@vado/loyalty/core';
 import { RemoteAuthDataSource } from './remote/auth.remote.datasource.interface';
-import { User } from '@koalacards/loyalty/core/domain/types/user';
 import { AuthIdentityRemoteDatasource } from './remote/auth.identity.remote.datasource';
 
 export class AuthRepositoryImpl implements AuthRepository {
@@ -37,6 +36,13 @@ export class AuthRepositoryImpl implements AuthRepository {
         if (!user) return false;
 
         return await this.remote.isBusinessStaff(user.id);
+    }
+
+    async getStaffData() {
+        const user = await this.getCurrentUser();
+        if (!user) return null;
+
+        return await this.remote.getStaffData(user.id);
     }
 
     async signOut(): Promise<void> {

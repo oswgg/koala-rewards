@@ -3,7 +3,7 @@ import {
     RegisterEarnActivityResult,
     RegisterRedeemActivityInput,
     RegisterRedeemActivityResult,
-} from '@koalacards/loyalty/core/domain/types/activity';
+} from '@vado/loyalty/core';
 
 export interface MembershipActivitiesRemoteDataSource {
     registerEarnActivity(
